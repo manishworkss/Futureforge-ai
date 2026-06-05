@@ -1,106 +1,73 @@
 <div align="center">
+  <h1>FutureForge AI</h1>
+  <p><strong>Intelligent SaaS Platform for Personalized Career Trajectories</strong></p>
   
-  # 🚀 FutureForge AI
-
-  <!-- Animated Typing SVG -->
-  <a href="https://github.com/manishworkss/Futureforge-ai">
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=28&pause=1000&color=4F46E5&center=true&vCenter=true&width=800&lines=Your+Personal+AI+Career+Mentor;Discover+Your+Perfect+Tech+Domain;Generate+Actionable+Learning+Roadmaps;Ace+Your+Next+Tech+Interview" alt="Typing SVG" />
-  </a>
-
-  <p align="center">
-    <strong>An intelligent SaaS platform that transforms student profiles into personalized career trajectories.</strong>
-  </p>
-
-  <!-- Badges -->
-  <p align="center">
-    <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white" alt="Spring Boot" />
-    <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
-    <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
-    <img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL" />
-    <img src="https://img.shields.io/badge/Llama_3-0467DF?style=for-the-badge&logo=meta&logoColor=white" alt="Llama 3" />
+  <p>
+    <a href="#"><img src="https://img.shields.io/badge/Spring%20Boot-3.3-brightgreen.svg?style=flat-square&logo=spring-boot" alt="Spring Boot"></a>
+    <a href="#"><img src="https://img.shields.io/badge/React-18-blue.svg?style=flat-square&logo=react" alt="React"></a>
+    <a href="#"><img src="https://img.shields.io/badge/MySQL-8.0-blue.svg?style=flat-square&logo=mysql" alt="MySQL"></a>
+    <a href="#"><img src="https://img.shields.io/badge/AI-Llama_3_70B-orange.svg?style=flat-square&logo=meta" alt="Llama 3"></a>
   </p>
 </div>
 
----
+## Overview
+FutureForge AI is an enterprise-grade application designed to analyze academic profiles and provide data-driven career guidance. By leveraging Large Language Models (LLMs), the platform evaluates user skill sets to generate optimal technical domains, comprehensive learning roadmaps, and continuous AI-driven mentorship.
 
-## ✨ Key Features
+## Architecture & Tech Stack
 
-<table align="center">
-  <tr>
-    <td align="center" width="33%">
-      <img src="https://cdn-icons-png.flaticon.com/512/8633/8633190.png" width="50" alt="Domain Match"/><br/>
-      <b>AI Domain Matching</b><br/>Analyzes your skills and semester to recommend the exact tech domains (e.g., Cloud, AI, Full Stack) where you'll thrive.
-    </td>
-    <td align="center" width="33%">
-      <img src="https://cdn-icons-png.flaticon.com/512/10061/10061730.png" width="50" alt="Roadmaps"/><br/>
-      <b>Dynamic Roadmaps</b><br/>Generates step-by-step, actionable learning roadmaps tailored to your exact proficiency level and goals.
-    </td>
-    <td align="center" width="33%">
-      <img src="https://cdn-icons-png.flaticon.com/512/4712/4712139.png" width="50" alt="AI Mentor"/><br/>
-      <b>24/7 AI Mentor Chat</b><br/>Stuck on a bug? Ask your personal Llama-3 powered AI mentor context-aware technical questions anytime.
-    </td>
-  </tr>
-</table>
+### Client Architecture
+* **Framework:** React 18 with TypeScript and Vite
+* **UI Engineering:** Tailwind CSS 3.4, Shadcn UI components
+* **State Management & Routing:** React Router v6
 
-## 🛠 Tech Stack
+### Core Services
+* **Application Server:** Spring Boot 3.3 (Java 17)
+* **Data Persistence:** MySQL 8.0, Hibernate ORM / Spring Data JPA
+* **Authentication:** Stateless JWT Implementation, Spring Security, OAuth2 (Google)
+* **AI Orchestration:** Groq Cloud API integration for ultra-low latency inference (Llama-3 70B)
+* **Document Processing:** iText PDF Core for dynamic roadmap report generation
 
-### Frontend (User Interface)
-- **Framework:** React + Vite (TypeScript)
-- **Styling:** Tailwind CSS 3.4 & Framer Motion (for buttery smooth UI animations)
-- **Components:** Shadcn UI
-- **Routing:** React Router v6
+## Core Capabilities
+1. **Algorithmic Domain Matching:** Analyzes academic background, current skill set, and semester progression to recommend optimal technology sectors.
+2. **Dynamic Roadmap Generation:** Synthesizes structured, milestone-based learning paths customized to the user's target proficiency.
+3. **Conversational AI Mentor:** Context-aware, continuous technical support powered by a system-prompted LLM.
+4. **Automated Document Export:** Generates standardized, downloadable PDF reports of the user's career trajectory and milestones.
 
-### Backend (Core Engine)
-- **Framework:** Spring Boot 3.3 (Java 17)
-- **Database:** MySQL with Hibernate/JPA
-- **Security:** Spring Security, JWT Authentication, Google OAuth2
-- **AI Integration:** Groq Cloud API (Llama 3 70B model)
-- **Document Gen:** iText PDF Core
-
----
-
-## ⚡ Quick Start
+## Deployment Instructions
 
 ### Prerequisites
-Make sure you have **Java 17**, **Node.js 20+**, and **MySQL** installed on your machine.
+* Java 17 JDK
+* Node.js 20+
+* MySQL Server
+* Groq API Key
+* Google Cloud Console OAuth Credentials
 
-### 1. Clone the repository
-```bash
-git clone https://github.com/manishworkss/Futureforge-ai.git
-cd Futureforge-ai
-```
+### Environment Configuration
+1. Initialize a MySQL database named `futureforge_db`.
+2. Configure the application properties by providing the necessary environment variables (`GROQ_API_KEY`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `JWT_SECRET`).
 
-### 2. Backend Setup
-1. Create a MySQL database named `futureforge_db`.
-2. Configure your environment variables in `.env` or `application-local.yml` (e.g., `GROQ_API_KEY`, `GOOGLE_CLIENT_ID`).
-3. Run the Spring Boot application:
+### Service Initialization
+
+#### Backend Service
 ```bash
 cd futureforge-ai
+./mvnw clean package -DskipTests
 ./mvnw spring-boot:run
 ```
 
-### 3. Frontend Setup
-1. Open a new terminal and navigate to the UI folder.
-2. Install dependencies and start the Vite dev server:
+#### Client Application
 ```bash
 cd futureforge-ui
 npm install
 npm run dev
 ```
-3. Open `http://localhost:3000` in your browser!
+
+The application client will securely proxy API requests to the backend service. Access the interface at `http://localhost:3000`.
+
+## Security Implementations
+* **Cryptographic Security:** Robust token validation with secure cryptographic signing for API access.
+* **XSS Mitigation:** Adherence to strict cross-site scripting prevention strategies.
+* **API Protection:** Engineered to handle concurrent database transactions and mitigate excessive API consumption.
 
 ---
-
-## 🔒 Security & Architecture
-
-FutureForge uses an advanced architecture to keep user data secure:
-- **Stateless Authentication:** Industry-standard JWT tokens stored securely in HttpOnly cookies to prevent XSS attacks.
-- **Role-Based Access Control:** Strict endpoint protection ensuring users can only access their own personalized AI roadmaps.
-- **Rate Limiting:** Protects the Groq AI layer from being overwhelmed by too many rapid requests.
-
----
-
-<div align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=4F46E5&height=150&section=footer" width="100%"/>
-  <p>Built with ❤️ by Manish Kumar</p>
-</div>
+*Maintained by Manish Kumar*
