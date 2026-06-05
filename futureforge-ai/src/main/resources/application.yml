@@ -1,0 +1,80 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: futureforge-ai
+  profiles:
+    include: local
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/futureforge_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: futureforge_user
+    password: futureforge123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    default-property-inclusion: non_null
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME:YOUR_EMAIL_HERE}
+    password: ${MAIL_PASSWORD:YOUR_APP_PASSWORD_HERE}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:YOUR_GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET:YOUR_GOOGLE_CLIENT_SECRET}
+            scope: email, profile
+
+app:
+  oauth2:
+    redirect-uri: ${OAUTH2_REDIRECT_URI:http://localhost:3000/oauth2/redirect}
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:FutureForgeAI2024SecretKeyForJWTTokenGenerationAndValidationMustBeLongEnough256Bits}
+  access-token-expiration: 86400000    # 24 hours
+  refresh-token-expiration: 604800000  # 7 days
+
+# Groq API Configuration
+groq:
+  api:
+    key: ${GROQ_API_KEY:YOUR_GROQ_API_KEY}
+    url: https://api.groq.com/openai/v1/chat/completions
+    model: llama-3.3-70b-versatile
+    max-tokens: 4096
+    temperature: 0.7
+
+# Swagger
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+
+# Logging
+logging:
+  level:
+    com.futureforge.ai: DEBUG
+    org.springframework.security: INFO
