@@ -101,7 +101,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .emailVerified(true)
                 .role(Role.USER)
                 .isActive(true)
-                // Password is left null for Google users
+                .passwordHash(java.util.UUID.randomUUID().toString()) // Set dummy password for OAuth2 users
                 .build();
         
         // Create empty profile and link it bidirectionally

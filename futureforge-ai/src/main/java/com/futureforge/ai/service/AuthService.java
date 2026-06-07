@@ -112,7 +112,7 @@ public class AuthService {
         String accessToken = jwtService.generateAccessToken(user);
 
         return AuthResponse.builder()
-                .accessToken(accessToken)
+                .token(accessToken)
                 .tokenType("Bearer")
                 .expiresIn(jwtService.getAccessTokenExpiration())
                 .user(AuthResponse.UserResponse.builder()
