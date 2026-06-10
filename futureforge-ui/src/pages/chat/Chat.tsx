@@ -71,7 +71,7 @@ export const Chat = () => {
   };
 
   return (
-    <div className="relative h-[calc(100vh-8rem)] flex flex-col max-w-5xl mx-auto rounded-[2rem] overflow-hidden bg-white/60 backdrop-blur-xl border border-slate-200 shadow-[0_0_40px_-10px_rgba(6,182,212,0.2)] z-10">
+    <div className="relative h-full flex flex-col w-full bg-white/60 backdrop-blur-xl z-10">
       
       {/* Premium Header */}
       <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200 bg-white/80">
@@ -110,7 +110,7 @@ export const Chat = () => {
             </div>
           </motion.div>
         ) : (
-          <div className="space-y-8 pb-4">
+          <div className="w-full max-w-5xl mx-auto space-y-8 pb-4">
             <AnimatePresence>
               {messages.map((msg) => {
                 const isUser = msg.role === 'USER';
@@ -177,7 +177,7 @@ export const Chat = () => {
 
       {/* Input Area */}
       <div className="p-4 sm:p-6 bg-white/80 border-t border-slate-200 backdrop-blur-xl">
-        <form onSubmit={handleSend} className="relative flex items-center max-w-4xl mx-auto">
+        <form onSubmit={handleSend} className="relative flex items-center max-w-6xl mx-auto">
           <Input 
             value={input}
             onChange={(e) => setInput(e.target.value)}
