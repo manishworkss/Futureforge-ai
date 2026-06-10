@@ -133,7 +133,7 @@ export const Profile = () => {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="space-y-8"
+      className="space-y-8 p-6 lg:p-10 max-w-7xl mx-auto pb-20"
     >
       <div>
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">

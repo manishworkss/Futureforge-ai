@@ -89,9 +89,13 @@ export const CareerAnalysis = () => {
     );
   }
 
-    if (!data) {
+  if (!data) {
     return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="p-6 lg:p-10 max-w-7xl mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6"
+      >
         <div className="bg-cyan-50 p-6 rounded-full">
           <LineChart className="h-16 w-16 text-cyan-600" />
         </div>

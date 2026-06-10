@@ -135,7 +135,7 @@ export const Chat = () => {
                     
                     <div className={`flex flex-col ${isUser ? 'items-end' : 'items-start'} max-w-[85%]`}>
                       <div 
-                        className={`px-6 py-4 text-[15px] leading-relaxed shadow-sm border backdrop-blur-md ${
+                        className={`px-6 py-4 text-[15px] leading-relaxed shadow-sm border backdrop-blur-md overflow-hidden break-words ${
                           isUser 
                             ? 'bg-cyan-600/90 text-white rounded-[1.5rem] rounded-br-sm border-cyan-500/50' 
                             : 'bg-white/80 text-slate-800 rounded-[1.5rem] rounded-bl-sm border-slate-200'
@@ -144,7 +144,7 @@ export const Chat = () => {
                         {isUser ? (
                           msg.content
                         ) : (
-                          <div className="prose prose-sm max-w-none text-slate-800 prose-p:text-slate-800 prose-p:leading-relaxed prose-pre:bg-slate-50 prose-pre:border prose-pre:border-slate-200 prose-pre:shadow-inner prose-code:text-cyan-700 prose-strong:text-cyan-700 prose-strong:font-bold prose-a:text-teal-600">
+                          <div className="prose prose-sm max-w-none text-slate-800 prose-p:text-slate-800 prose-p:leading-relaxed prose-pre:bg-slate-50 prose-pre:border prose-pre:border-slate-200 prose-pre:shadow-inner prose-pre:overflow-x-auto prose-code:text-cyan-700 prose-strong:text-cyan-700 prose-strong:font-bold prose-a:text-teal-600">
                             <ReactMarkdown>{msg.content}</ReactMarkdown>
                           </div>
                         )}
