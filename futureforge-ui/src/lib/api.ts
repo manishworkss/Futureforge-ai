@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create a centralized Axios instance
 export const api = axios.create({
-  baseURL: 'http://localhost:8080', // Spring Boot default port
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080', // Uses environment variable or falls back to localhost
   headers: {
     'Content-Type': 'application/json',
   },
