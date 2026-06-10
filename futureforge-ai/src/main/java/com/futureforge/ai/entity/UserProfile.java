@@ -42,6 +42,18 @@ public class UserProfile {
     @Column(name = "bio", columnDefinition = "TEXT")
     private String bio;
 
+    @Column(name = "linkedin_url")
+    private String linkedinUrl;
+
+    @Column(name = "github_url")
+    private String githubUrl;
+
+    @Column(name = "leetcode_url")
+    private String leetcodeUrl;
+
+    @Column(name = "portfolio_url")
+    private String portfolioUrl;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

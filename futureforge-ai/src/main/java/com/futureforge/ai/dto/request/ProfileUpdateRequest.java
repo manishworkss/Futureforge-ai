@@ -24,4 +24,9 @@ public class ProfileUpdateRequest {
     private String careerGoal;
 
     private String bio;
+
+    private String linkedinUrl;
+    private String githubUrl;
+    private String leetcodeUrl;
+    private String portfolioUrl;
 }

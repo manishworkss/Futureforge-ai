@@ -89,18 +89,18 @@ export const DomainRecommendation = () => {
     );
   }
 
-  if (!hasProfileContext) {
+    if (!hasProfileContext) {
     return (
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6">
-        <div className="bg-amber-100 p-4 rounded-full dark:bg-amber-900/30">
-          <AlertCircle className="h-12 w-12 text-amber-600 dark:text-amber-500" />
+        <div className="bg-amber-50 p-4 rounded-full">
+          <AlertCircle className="h-12 w-12 text-amber-500" />
         </div>
         <div className="max-w-md space-y-2">
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Profile Incomplete</h2>
-          <p className="text-slate-500 dark:text-slate-400">We need more information about your background and skills to generate accurate recommendations.</p>
+          <h2 className="text-2xl font-bold text-slate-900">Profile Incomplete</h2>
+          <p className="text-slate-500">We need more information about your background and skills to generate accurate recommendations.</p>
         </div>
         <Link to="/profile">
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+          <Button className="bg-cyan-600 hover:bg-cyan-700 text-white">
             Complete Profile <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </Link>
@@ -111,14 +111,14 @@ export const DomainRecommendation = () => {
   if (!data || !data.recommendedDomains || data.recommendedDomains.length === 0) {
     return (
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6">
-        <div className="bg-blue-50 p-6 rounded-full dark:bg-blue-900/20">
-          <Compass className="h-16 w-16 text-blue-600 dark:text-blue-500" />
+        <div className="bg-cyan-50 p-6 rounded-full">
+          <Compass className="h-16 w-16 text-cyan-600" />
         </div>
         <div className="max-w-md space-y-2">
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Discover Your Path</h2>
-          <p className="text-slate-500 dark:text-slate-400">Let our AI analyze your skills and current market trends to recommend the best tech domains for you.</p>
+          <h2 className="text-2xl font-bold text-slate-900">Discover Your Path</h2>
+          <p className="text-slate-500">Let our AI analyze your skills and current market trends to recommend the best tech domains for you.</p>
         </div>
-        <Button onClick={handleGenerate} disabled={isGenerating} size="lg" className="bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-600/20">
+        <Button onClick={handleGenerate} disabled={isGenerating} size="lg" className="bg-cyan-600 hover:bg-cyan-700 text-white shadow-xl shadow-cyan-600/20">
           {isGenerating ? "Analyzing your profile..." : <><Sparkles className="mr-2 h-4 w-4" /> Generate Recommendations</>}
         </Button>
       </motion.div>
@@ -129,16 +129,16 @@ export const DomainRecommendation = () => {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-            <Compass className="h-8 w-8 text-blue-600" />
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+            <Compass className="h-8 w-8 text-cyan-600" />
             Domain Recommendations
           </h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-2">
+          <p className="text-slate-500 mt-2">
             AI-curated career paths tailored to your unique skill set and interests.
           </p>
         </div>
-        <Button onClick={handleGenerate} disabled={isGenerating} variant="outline" className="shrink-0 bg-white dark:bg-slate-950">
-          {isGenerating ? "Regenerating..." : <><Sparkles className="mr-2 h-4 w-4 text-blue-600" /> Regenerate Analysis</>}
+        <Button onClick={handleGenerate} disabled={isGenerating} variant="outline" className="shrink-0 bg-white">
+          {isGenerating ? "Regenerating..." : <><Sparkles className="mr-2 h-4 w-4 text-cyan-600" /> Regenerate Analysis</>}
         </Button>
       </div>
 
@@ -150,13 +150,13 @@ export const DomainRecommendation = () => {
       >
         {data.recommendedDomains.map((domain, index) => (
           <motion.div key={index} variants={itemVariants} whileHover={{ y: -4 }}>
-            <Card className={`h-full flex flex-col border-slate-200 shadow-sm dark:border-slate-800 ${index === 0 ? 'ring-2 ring-blue-600/50 bg-blue-50/30 dark:bg-blue-900/10' : ''}`}>
+            <Card className={`h-full flex flex-col border-slate-200 shadow-sm ${index === 0 ? 'ring-2 ring-cyan-600/50 bg-cyan-50/30' : ''}`}>
               <CardHeader className="pb-4">
                 <div className="flex justify-between items-start mb-2">
-                  <Badge variant={index === 0 ? "default" : "secondary"} className={index === 0 ? "bg-blue-600 text-white" : ""}>
+                  <Badge variant={index === 0 ? "default" : "secondary"} className={index === 0 ? "bg-cyan-600 text-white" : ""}>
                     {index === 0 ? "Top Match" : `Match #${index + 1}`}
                   </Badge>
-                  <div className="flex items-center gap-1.5 text-sm font-bold text-green-600 dark:text-green-500">
+                  <div className="flex items-center gap-1.5 text-sm font-bold text-green-600">
                     <TrendingUp className="h-4 w-4" />
                     {domain.matchPercentage}% Match
                   </div>
@@ -166,35 +166,35 @@ export const DomainRecommendation = () => {
               <CardContent className="flex-1 space-y-6">
                 
                 <div>
-                  <Progress value={domain.matchPercentage} className={`h-2 ${index === 0 ? '[&>div]:bg-blue-600' : ''} bg-slate-100 dark:bg-slate-800`} />
+                  <Progress value={domain.matchPercentage} className={`h-2 ${index === 0 ? '[&>div]:bg-cyan-600' : ''} bg-slate-100`} />
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                  <h4 className="text-sm font-semibold text-slate-900 uppercase tracking-wider flex items-center gap-2">
                     <Sparkles className="h-4 w-4 text-amber-500" /> 
                     AI Reasoning
                   </h4>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-100 dark:border-slate-800">
+                  <p className="text-sm text-slate-600 leading-relaxed bg-white p-4 rounded-lg border border-slate-100">
                     {domain.reasoning}
                   </p>
                 </div>
 
                 <div className="space-y-3">
-                  <h4 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider">
+                  <h4 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">
                     Recommended Roles
                   </h4>
                   <div className="flex flex-wrap gap-2">
                     {domain.recommendedRoles.map((role, rIndex) => (
-                      <Badge key={rIndex} variant="outline" className="bg-white dark:bg-slate-950">
+                      <Badge key={rIndex} variant="outline" className="bg-white">
                         {role}
                       </Badge>
                     ))}
                   </div>
                 </div>
               </CardContent>
-              <CardFooter className="pt-4 border-t border-slate-100 dark:border-slate-800">
+              <CardFooter className="pt-4 border-t border-slate-100">
                 <Link to="/analysis" className="w-full">
-                  <Button variant="ghost" className="w-full text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20">
+                  <Button variant="ghost" className="w-full text-cyan-600 hover:text-cyan-700 hover:bg-cyan-50">
                     Run Career Analysis for this Domain <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>

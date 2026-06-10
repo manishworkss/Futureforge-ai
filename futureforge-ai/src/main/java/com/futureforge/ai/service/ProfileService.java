@@ -40,6 +40,10 @@ public class ProfileService {
         profile.setEducation(request.getEducation());
         profile.setCareerGoal(request.getCareerGoal());
         profile.setBio(request.getBio());
+        profile.setLinkedinUrl(request.getLinkedinUrl());
+        profile.setGithubUrl(request.getGithubUrl());
+        profile.setLeetcodeUrl(request.getLeetcodeUrl());
+        profile.setPortfolioUrl(request.getPortfolioUrl());
 
         try {
             if (request.getSkills() != null) {
@@ -87,6 +91,10 @@ public class ProfileService {
                 .interests(interests)
                 .careerGoal(profile.getCareerGoal())
                 .bio(profile.getBio())
+                .linkedinUrl(profile.getLinkedinUrl())
+                .githubUrl(profile.getGithubUrl())
+                .leetcodeUrl(profile.getLeetcodeUrl())
+                .portfolioUrl(profile.getPortfolioUrl())
                 .createdAt(profile.getCreatedAt())
                 .updatedAt(profile.getUpdatedAt())
                 .build();
@@ -96,13 +104,17 @@ public class ProfileService {
     public String buildProfileContext(User user) {
         try {
             ProfileResponse profile = getProfile(user);
-            return String.format("Semester: %d\nEducation: %s\nSkills: %s\nInterests: %s\nCareer Goal: %s\nBio: %s",
+            return String.format("Semester: %d\nEducation: %s\nSkills: %s\nInterests: %s\nCareer Goal: %s\nBio: %s\nLinkedIn: %s\nGitHub: %s\nLeetCode: %s\nPortfolio: %s",
                     profile.getSemester(),
                     profile.getEducation(),
                     String.join(", ", profile.getSkills()),
                     String.join(", ", profile.getInterests()),
                     profile.getCareerGoal(),
-                    profile.getBio());
+                    profile.getBio(),
+                    profile.getLinkedinUrl() != null ? profile.getLinkedinUrl() : "Not Provided",
+                    profile.getGithubUrl() != null ? profile.getGithubUrl() : "Not Provided",
+                    profile.getLeetcodeUrl() != null ? profile.getLeetcodeUrl() : "Not Provided",
+                    profile.getPortfolioUrl() != null ? profile.getPortfolioUrl() : "Not Provided");
         } catch (Exception e) {
             return "No profile data available.";
         }

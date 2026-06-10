@@ -39,14 +39,14 @@ export const Login = () => {
   }
 
   return (
-    <div className="relative min-h-screen w-full bg-slate-950 flex items-center justify-center p-4 sm:p-8 overflow-hidden font-sans">
+    <div className="relative min-h-screen w-full bg-slate-50 flex items-center justify-center p-4 sm:p-8 overflow-hidden font-sans">
       
       {/* Animated Background Gradients */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-600/30 blur-[120px] mix-blend-screen animate-pulse duration-10000"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-purple-600/30 blur-[120px] mix-blend-screen animate-pulse duration-10000" style={{ animationDelay: '2s' }}></div>
-      <div className="absolute top-[20%] right-[10%] w-[20%] h-[30%] rounded-full bg-blue-500/20 blur-[100px] mix-blend-screen animate-pulse duration-10000" style={{ animationDelay: '4s' }}></div>
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-cyan-400/20 blur-[120px] mix-blend-multiply animate-pulse duration-10000"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-teal-400/20 blur-[120px] mix-blend-multiply animate-pulse duration-10000" style={{ animationDelay: '2s' }}></div>
+      <div className="absolute top-[20%] right-[10%] w-[20%] h-[30%] rounded-full bg-cyan-300/20 blur-[100px] mix-blend-multiply animate-pulse duration-10000" style={{ animationDelay: '4s' }}></div>
 
-      <div className="relative w-full max-w-[1200px] min-h-[700px] bg-slate-900/40 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-[0_0_80px_-20px_rgba(79,70,229,0.3)] overflow-hidden flex flex-col lg:flex-row">
+      <div className="relative w-full max-w-[1200px] min-h-[700px] bg-white/80 backdrop-blur-2xl border border-slate-200 rounded-[2.5rem] shadow-[0_0_80px_-20px_rgba(6,182,212,0.15)] overflow-hidden flex flex-col lg:flex-row">
         
         {/* Left Side: Form Panel */}
         <div className="w-full lg:w-1/2 p-8 sm:p-12 lg:p-16 flex flex-col justify-center relative z-10">
@@ -57,10 +57,10 @@ export const Login = () => {
             transition={{ duration: 0.5 }}
             className="flex items-center gap-3 mb-12"
           >
-            <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/30">
-              <BrainCircuit className="w-6 h-6 text-white" />
+            <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-teal-500 shadow-lg shadow-cyan-500/30 overflow-hidden">
+              <img src="/logo.jpg" alt="FutureForge Logo" className="w-full h-full object-cover" />
             </div>
-            <span className="font-bold text-2xl text-white tracking-tight">FutureForge AI</span>
+            <span className="font-bold text-2xl text-slate-900 tracking-tight">FutureForge AI</span>
           </motion.div>
 
           <motion.div
@@ -68,8 +68,8 @@ export const Login = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
-            <h1 className="text-4xl font-extrabold text-white mb-2 tracking-tight">Welcome back</h1>
-            <p className="text-slate-400 mb-8 text-sm">Enter your credentials to access your personalized AI workspace.</p>
+            <h1 className="text-4xl font-extrabold text-slate-900 mb-2 tracking-tight">Welcome back</h1>
+            <p className="text-slate-600 mb-8 text-sm">Enter your credentials to access your personalized AI workspace.</p>
           </motion.div>
 
           <motion.form 
@@ -80,7 +80,7 @@ export const Login = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <div className="space-y-2">
-              <Label htmlFor="login" className="text-xs font-semibold text-slate-300 uppercase tracking-wider ml-1">Email Address</Label>
+              <Label htmlFor="login" className="text-xs font-semibold text-slate-600 uppercase tracking-wider ml-1">Email Address</Label>
               <Input 
                 id="login" 
                 type="email" 
@@ -88,14 +88,14 @@ export const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="bg-slate-950/50 border-slate-800 text-white placeholder:text-slate-600 h-14 text-base focus-visible:ring-indigo-500 rounded-xl transition-all"
+                className="bg-white border-slate-200 text-slate-900 placeholder:text-slate-400 h-14 text-base focus-visible:ring-cyan-500 rounded-xl transition-all"
               />
             </div>
 
             <div className="space-y-2">
               <div className="flex items-center justify-between ml-1">
-                <Label htmlFor="password" className="text-xs font-semibold text-slate-300 uppercase tracking-wider">Password</Label>
-                <Link to="/forgot-password" className="text-xs font-medium text-indigo-400 hover:text-indigo-300 transition-colors">
+                <Label htmlFor="password" className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Password</Label>
+                <Link to="/forgot-password" className="text-xs font-medium text-cyan-600 hover:text-cyan-500 transition-colors">
                   Forgot password?
                 </Link>
               </div>
@@ -107,12 +107,12 @@ export const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="bg-slate-950/50 border-slate-800 text-white placeholder:text-slate-600 h-14 text-base focus-visible:ring-indigo-500 rounded-xl pr-12 transition-all"
+                  className="bg-white border-slate-200 text-slate-900 placeholder:text-slate-400 h-14 text-base focus-visible:ring-cyan-500 rounded-xl pr-12 transition-all"
                 />
                 <button 
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -120,26 +120,26 @@ export const Login = () => {
             </div>
 
             <div className="flex items-center space-x-3 pt-2 pb-4">
-              <Switch id="remember-me" className="data-[state=checked]:bg-indigo-500 border-slate-700" />
-              <Label htmlFor="remember-me" className="text-sm text-slate-300 cursor-pointer">Remember me for 30 days</Label>
+              <Switch id="remember-me" className="data-[state=checked]:bg-cyan-500 border-slate-200" />
+              <Label htmlFor="remember-me" className="text-sm text-slate-600 cursor-pointer">Remember me for 30 days</Label>
             </div>
 
-            <Button type="submit" disabled={isLoading} className="w-full h-14 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-base font-semibold shadow-[0_0_20px_-5px_rgba(79,70,229,0.5)] hover:shadow-[0_0_25px_-5px_rgba(79,70,229,0.7)] transition-all group">
+            <Button type="submit" disabled={isLoading} className="w-full h-14 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-base font-semibold shadow-[0_0_20px_-5px_rgba(6,182,212,0.5)] hover:shadow-[0_0_25px_-5px_rgba(6,182,212,0.7)] transition-all group">
               {isLoading ? 'Authenticating...' : 'Sign in to workspace'}
               {!isLoading && <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />}
             </Button>
 
             <div className="relative flex items-center py-4">
-              <div className="flex-grow border-t border-slate-800"></div>
-              <span className="flex-shrink-0 mx-4 text-slate-500 text-xs uppercase tracking-widest font-medium">Or continue with</span>
-              <div className="flex-grow border-t border-slate-800"></div>
+              <div className="flex-grow border-t border-slate-200"></div>
+              <span className="flex-shrink-0 mx-4 text-slate-400 text-xs uppercase tracking-widest font-medium">Or continue with</span>
+              <div className="flex-grow border-t border-slate-200"></div>
             </div>
 
             <Button 
               type="button" 
               variant="outline" 
               onClick={handleGoogleLogin} 
-              className="w-full h-14 bg-slate-900/50 hover:bg-slate-800 border-slate-700 text-white hover:text-white rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-3"
+              className="w-full h-14 bg-white hover:bg-slate-50 border-slate-200 text-slate-700 hover:text-slate-900 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-3 shadow-sm"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -152,23 +152,23 @@ export const Login = () => {
           </motion.form>
 
           <motion.div 
-            className="mt-8 text-center text-sm font-medium text-slate-400"
+            className="mt-8 text-center text-sm font-medium text-slate-500"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
             Don't have an account?{' '}
-            <Link to="/auth/register" className="text-indigo-400 hover:text-indigo-300 hover:underline transition-colors">
+            <Link to="/auth/register" className="text-cyan-600 hover:text-cyan-500 hover:underline transition-colors">
               Create one now
             </Link>
           </motion.div>
         </div>
 
         {/* Right Side: Visual Showcase */}
-        <div className="hidden lg:flex w-1/2 relative bg-slate-900 border-l border-white/5 overflow-hidden items-center justify-center">
+        <div className="hidden lg:flex w-1/2 relative bg-slate-50 border-l border-slate-200 overflow-hidden items-center justify-center">
           {/* Abstract Grid Background */}
-          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay"></div>
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#06b6d412_1px,transparent_1px),linear-gradient(to_bottom,#06b6d412_1px,transparent_1px)] bg-[size:24px_24px]"></div>
           
           <div className="relative z-10 w-full max-w-md p-10">
             <motion.div
@@ -176,10 +176,10 @@ export const Login = () => {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.7, delay: 0.2 }}
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-sm font-medium mb-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-100/50 border border-cyan-200 text-cyan-700 text-sm font-medium mb-6">
                 <Sparkles className="w-4 h-4" /> AI-Powered Career Growth
               </div>
-              <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">Your intelligent <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">career co-pilot</span></h2>
+              <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-6 leading-tight">Your intelligent <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-teal-500">career co-pilot</span></h2>
               
               <div className="space-y-5 mt-10">
                 {[
@@ -192,12 +192,12 @@ export const Login = () => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5, delay: 0.4 + (i * 0.1) }}
-                    className="flex gap-4 items-start p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm hover:bg-white/10 transition-colors"
+                    className="flex gap-4 items-start p-4 rounded-2xl bg-white border border-slate-100 shadow-sm hover:border-cyan-200 hover:shadow-md transition-all"
                   >
-                    <div className="mt-1 w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.8)]"></div>
+                    <div className="mt-1 w-2 h-2 rounded-full bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.5)]"></div>
                     <div>
-                      <h3 className="text-white font-semibold">{item.title}</h3>
-                      <p className="text-slate-400 text-sm mt-1">{item.desc}</p>
+                      <h3 className="text-slate-900 font-semibold">{item.title}</h3>
+                      <p className="text-slate-500 text-sm mt-1">{item.desc}</p>
                     </div>
                   </motion.div>
                 ))}
@@ -216,7 +216,7 @@ export const Login = () => {
               repeat: Infinity,
               ease: "easeInOut" 
             }}
-            className="absolute top-1/4 -right-20 w-64 h-64 bg-gradient-to-br from-indigo-500/40 to-purple-600/40 rounded-full blur-3xl pointer-events-none"
+            className="absolute top-1/4 -right-20 w-64 h-64 bg-gradient-to-br from-cyan-400/30 to-teal-500/30 rounded-full blur-3xl pointer-events-none"
           ></motion.div>
         </div>
 

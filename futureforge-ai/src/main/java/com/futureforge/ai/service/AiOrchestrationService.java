@@ -30,23 +30,24 @@ public class AiOrchestrationService {
         String profileContext = profileService.buildProfileContext(user);
 
         String systemPrompt = """
-                You are an expert IT career counselor helping a BCA (Computer Applications) student find their ideal tech domain.
-                Analyze the user's profile and recommend the top 3 IT domains that fit them best based STRICTLY on their skills and interests.
+                You are 'Oracle', an elite IT Career Strategist AI.
+                Analyze the user's profile and recommend the top 3 IT domains that fit them best based STRICTLY on their skills, current role, and stated interests.
+                Do NOT hallucinate skills they do not possess.
                 
-                Your response MUST be exactly in the following JSON format ONLY, no markdown formatting:
+                Your response MUST be exactly in the following JSON format ONLY, without markdown tags like ```json:
                 {
                     "recommendations": [
                         {
-                            "domainName": "Web Development",
-                            "matchReasoning": "Because you know HTML and CSS...",
-                            "matchPercentage": 95,
-                            "topRoles": ["Frontend Developer", "Full Stack Developer"]
+                            "domainName": "Cloud Engineering",
+                            "matchReasoning": "Your background in Linux and scripting strongly aligns with Cloud Infrastructure...",
+                            "matchPercentage": 92,
+                            "topRoles": ["Cloud Architect", "DevOps Engineer"]
                         }
                     ]
                 }
                 """;
 
-        String userMessage = String.format("## My Profile:\n%s\n\nPlease recommend the top 3 domains for me.", profileContext);
+        String userMessage = String.format("## Current Neural Profile:\n%s\n\nGenerate optimal domain trajectories.", profileContext);
 
         return groqAiService.chat(systemPrompt, userMessage);
     }
@@ -55,19 +56,21 @@ public class AiOrchestrationService {
         String profileContext = profileService.buildProfileContext(user);
 
         String systemPrompt = """
-                You are an expert career counselor. Analyze the user's profile against their target domain.
+                You are 'Oracle', an elite IT Career Strategist AI.
+                Conduct a brutal, realistic gap analysis of the user's current skills against their target domain.
+                Identify exact technical deficiencies and high-value strengths.
                 
-                Your response MUST be exactly in the following JSON format ONLY:
+                Your response MUST be exactly in the following JSON format ONLY, without markdown tags like ```json:
                 {
-                    "careerFitScore": "85/100",
-                    "analysisResult": "Detailed analysis paragraph...",
-                    "strengths": ["strength1", "strength2"],
-                    "weaknesses": ["weakness1", "weakness2"],
-                    "recommendations": ["recommendation1", "recommendation2"]
+                    "careerFitScore": "75/100",
+                    "analysisResult": "Detailed realistic analysis of their current standing in the market...",
+                    "strengths": ["Strong foundational Java", "Good understanding of REST"],
+                    "weaknesses": ["Lacks modern CI/CD experience", "No cloud platform exposure"],
+                    "recommendations": ["Master Docker/Kubernetes", "Build a serverless project on AWS"]
                 }
                 """;
 
-        String userMessage = String.format("## My Profile:\n%s\n\n## Target Domain:\n%s\n\nPlease analyze my profile against this domain.", profileContext, targetDomain);
+        String userMessage = String.format("## Profile Data:\n%s\n\n## Target Domain:\n%s\n\nExecute gap analysis.", profileContext, targetDomain);
 
         return groqAiService.chat(systemPrompt, userMessage);
     }
@@ -75,50 +78,49 @@ public class AiOrchestrationService {
     public String generateRoadmap(User user, String targetRole, String preferences) {
         String profileContext = profileService.buildProfileContext(user);
         
-        // Fetch latest weaknesses from career analysis to influence roadmap length
         List<CareerAnalysis> analyses = careerAnalysisRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
-        String analysisContext = "No prior analysis available.";
+        String analysisContext = "No prior gap analysis detected.";
         if (!analyses.isEmpty()) {
             CareerAnalysis latest = analyses.get(0);
-            analysisContext = "Weaknesses: " + latest.getWeaknesses() + "\nAnalysis: " + latest.getAnalysisResult();
+            analysisContext = "Identified Weaknesses: " + latest.getWeaknesses() + "\nAnalysis Summary: " + latest.getAnalysisResult();
         }
 
         String systemPrompt = """
-                You are an expert curriculum designer.
-                Create a detailed, week-by-week learning roadmap for the user to achieve their target role.
-                If they have significant weaknesses/skill gaps, extend the roadmap to cover them (e.g. 12-16 weeks).
-                If they are already highly skilled, keep it short and advanced (e.g. 4-8 weeks).
+                You are 'Oracle', an elite IT Curriculum Architect AI.
+                Design a realistic, step-by-step learning roadmap for the user to secure the Target Role.
+                You must explicitly address the "Identified Weaknesses" from their gap analysis.
+                Make the milestones progressive and highly technical. Avoid vague advice.
                 
-                Your response MUST be exactly in the following JSON format ONLY:
+                Your response MUST be exactly in the following JSON format ONLY, without markdown tags like ```json:
                 {
-                    "title": "Roadmap Title",
-                    "description": "Brief description of the roadmap",
-                    "difficultyLevel": "BEGINNER",
+                    "title": "Full Stack Migration Architect Roadmap",
+                    "description": "An intense 12-week trajectory focusing on fixing CI/CD gaps and mastering cloud deployments.",
+                    "difficultyLevel": "INTERMEDIATE",
                     "estimatedWeeks": 12,
                     "milestones": [
                         {
                             "weekNumber": 1,
-                            "title": "Milestone Title",
-                            "description": "What to learn and do this week",
-                            "resources": "Comma-separated list of recommended resources"
+                            "title": "Containerization Mastery",
+                            "description": "Learn Docker basics, write Dockerfiles for existing Spring apps, and setup docker-compose.",
+                            "resources": "Docker Official Docs, 'Docker Mastery' course"
                         }
                     ]
                 }
                 """;
 
         String userMessage = String.format("""
-                ## My Profile:
+                ## Neural Profile:
                 %s
                 
                 ## Target Role: %s
                 
-                ## My Latest Career Analysis (Weaknesses to address):
+                ## Strategic Context (Weaknesses to address):
                 %s
                 
-                ## Preferences:
+                ## User Preferences:
                 %s
                 
-                Create a personalized learning roadmap.
+                Generate the curriculum matrix.
                 """, profileContext, targetRole, analysisContext, (preferences != null ? preferences : "None"));
 
         return groqAiService.chat(systemPrompt, userMessage);
@@ -128,42 +130,52 @@ public class AiOrchestrationService {
         String profileContext = profileService.buildProfileContext(user);
         
         List<CareerAnalysis> analyses = careerAnalysisRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
-        String analysisContext = analyses.isEmpty() ? "None" : "Weaknesses: " + analyses.get(0).getWeaknesses();
+        String analysisContext = analyses.isEmpty() ? "None" : "Identified Weaknesses: " + analyses.get(0).getWeaknesses() + " | Fit Score: " + analyses.get(0).getCareerFitScore();
 
         List<Roadmap> roadmaps = roadmapRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
-        String roadmapContext = roadmaps.isEmpty() ? "None" : roadmaps.get(0).getTargetRole() + " Roadmap";
+        String roadmapContext = "None";
+        if (!roadmaps.isEmpty()) {
+            Roadmap active = roadmaps.get(0);
+            long completedMilestones = active.getMilestones().stream().filter(m -> m.getIsCompleted()).count();
+            long totalMilestones = active.getMilestones().size();
+            roadmapContext = String.format("Target Role: %s | Progress: %d/%d Milestones Completed", 
+                    active.getTargetRole(), completedMilestones, totalMilestones);
+        }
 
         String systemPrompt = String.format("""
-                You are FutureForge AI Mentor — a highly contextual career mentor.
+                You are 'Oracle', an elite, highly realistic IT Career Strategist AI from FutureForge.
                 
-                ## USER CONTEXT
-                Profile:
+                ## SYSTEM DIRECTIVES:
+                1. Act as a senior tech mentor. Be direct, highly technical, actionable, and encouraging but realistic.
+                2. NEVER break character. You are Oracle.
+                3. NEVER start responses with generic filler like "As an AI...".
+                4. Keep responses concise (1-3 short paragraphs max). Format with Markdown (bolding key tech terms).
+                5. STRICTLY utilize the User's Context below. If they ask about their progress, reference their Roadmap Progress. If they ask what to learn next, reference their Identified Weaknesses.
+                6. MAKE YOUR RESPONSES DYNAMIC AND SOLUTION-ORIENTED. For example, if a user has a gap, explicitly tell them: "Go and upload your latest resume" or "Complete the Docker module in your roadmap and check off the milestone." Give step-by-step actionable solutions.
+                7. IF THE USER'S PROFILE IS EMPTY (e.g., no skills or role listed): Do NOT ask them generic questions. Explicitly tell them: "Your neural profile is currently empty. Please navigate to the **Profile** page in the sidebar and upload your technical skills, education, and current role so I can construct a personalized trajectory for you."
+                
+                ## USER'S EXACT CONTEXT:
                 %s
                 
-                Latest Career Analysis:
+                Latest Gap Analysis:
                 %s
                 
-                Active Roadmap:
+                Active Learning Roadmap:
                 %s
-                
-                Guidelines:
-                - Use the provided context to give extremely personalized advice.
-                - Do NOT repeat their profile back to them. Just use the knowledge.
-                - Be warm, encouraging, and concise (2-3 paragraphs max).
                 """, profileContext, analysisContext, roadmapContext);
 
-        // Build history
+        // Fetch recent history (limit to 10 for tight context window)
         List<ChatMessage> rawHistory = chatMessageRepository.findTop20ByUserIdOrderByCreatedAtDesc(user.getId());
-        List<ChatMessage> history = new ArrayList<>(rawHistory);
-        java.util.Collections.reverse(history);
+        List<ChatMessage> history = new ArrayList<>(rawHistory.subList(0, Math.min(10, rawHistory.size())));
+        java.util.Collections.reverse(history); // Chronological order
         
         List<Map<String, String>> messages = new ArrayList<>();
         messages.add(Map.of("role", "system", "content", systemPrompt));
         
         for (ChatMessage msg : history) {
             String role = msg.getRole().name().toLowerCase();
-            // Llama API expects 'assistant' instead of our 'mentor' role sometimes, but map to 'assistant'
-            if (role.equals("mentor")) role = "assistant";
+            // Llama API expects 'assistant'
+            if (role.equals("mentor") || role.equals("ai")) role = "assistant";
             messages.add(Map.of("role", role, "content", msg.getContent()));
         }
 

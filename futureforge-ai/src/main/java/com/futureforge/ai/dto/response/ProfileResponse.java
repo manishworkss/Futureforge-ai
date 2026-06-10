@@ -17,4 +17,8 @@ public class ProfileResponse {
     private String bio;
     private List<String> skills;
     private List<String> interests;
+    private String linkedinUrl;
+    private String githubUrl;
+    private String leetcodeUrl;
+    private String portfolioUrl;
 }

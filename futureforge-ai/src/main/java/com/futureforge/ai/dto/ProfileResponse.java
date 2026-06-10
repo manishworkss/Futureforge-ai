@@ -23,6 +23,10 @@ public class ProfileResponse {
     private List<String> interests;
     private String careerGoal;
     private String bio;
+    private String linkedinUrl;
+    private String githubUrl;
+    private String leetcodeUrl;
+    private String portfolioUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
