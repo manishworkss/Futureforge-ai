@@ -106,6 +106,13 @@
             <artifactId>layout</artifactId>
             <version>8.0.5</version>
         </dependency>
+        
+        <!-- PDF Text Extraction (PDFBox) -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>3.0.1</version>
+        </dependency>
 
         <!-- Test -->
         <dependency>

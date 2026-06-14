@@ -18,6 +18,33 @@ interface AnalysisResponse {
   learningPriorities: string[];
 }
 
+const parseAnalysisResponse = (raw: any, fallbackDomain: string = ''): AnalysisResponse => {
+  const parseJsonArray = (str: string | undefined): string[] => {
+    if (!str) return [];
+    try {
+      const parsed = JSON.parse(str);
+      if (Array.isArray(parsed)) return parsed;
+    } catch(e) {}
+    // Fallback: split by newline and remove bullet points
+    return typeof str === 'string' 
+      ? str.split('\n').map(s => s.replace(/^[-\*\d\.\s]+/, '').trim()).filter(Boolean) 
+      : [];
+  };
+
+  const recs = parseJsonArray(raw.recommendations);
+  // Split recommendations into missing skills and learning priorities
+  const mid = Math.ceil(recs.length / 2) || 1;
+
+  return {
+    id: raw.id,
+    targetDomain: raw.analysisInput || fallbackDomain,
+    strengths: parseJsonArray(raw.strengths),
+    weaknesses: parseJsonArray(raw.weaknesses),
+    missingSkills: recs.slice(0, mid),
+    learningPriorities: recs.slice(mid)
+  };
+};
+
 export const CareerAnalysis = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -37,8 +64,7 @@ export const CareerAnalysis = () => {
       const response = await api.get('/api/career/analyses');
       const analyses = response.data.data; // List of responses
       if (analyses && analyses.length > 0) {
-        // Just take the most recent one for the dashboard view
-        setData(analyses[0]);
+        setData(parseAnalysisResponse(analyses[0]));
       }
     } catch (error) {
       console.error("Failed to fetch analyses", error);
@@ -56,8 +82,8 @@ export const CareerAnalysis = () => {
 
     setIsGenerating(true);
     try {
-      const response = await api.post('/api/career/analyze', { targetDomain });
-      setData(response.data.data);
+      const response = await api.post('/api/career/analyze', { careerGoal: targetDomain });
+      setData(parseAnalysisResponse(response.data.data, targetDomain));
       toast.success('Career analysis generated!');
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to generate analysis');
@@ -78,7 +104,7 @@ export const CareerAnalysis = () => {
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
+      <div className="p-4 lg:p-8 max-w-7xl mx-auto space-y-6 w-full">
         <Skeleton className="h-10 w-1/3" />
         <Skeleton className="h-6 w-1/4" />
         <div className="grid gap-6 md:grid-cols-2">
@@ -94,10 +120,10 @@ export const CareerAnalysis = () => {
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="p-6 lg:p-10 max-w-7xl mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6"
+        className="p-4 lg:p-10 max-w-7xl mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6 w-full"
       >
-        <div className="bg-cyan-50 p-6 rounded-full">
-          <LineChart className="h-16 w-16 text-cyan-600" />
+        <div className="bg-blue-50 p-6 rounded-full">
+          <LineChart className="h-16 w-16 text-blue-600" />
         </div>
         <div className="max-w-md space-y-2">
           <h2 className="text-2xl font-bold text-slate-900">Run Your First Analysis</h2>
@@ -109,7 +135,7 @@ export const CareerAnalysis = () => {
             value={targetDomain}
             onChange={(e) => setTargetDomain(e.target.value)}
           />
-          <Button type="submit" disabled={isGenerating} className="bg-cyan-600 hover:bg-cyan-700 text-white shrink-0">
+          <Button type="submit" disabled={isGenerating} className="bg-blue-600 hover:bg-blue-700 text-white shrink-0">
             {isGenerating ? "Analyzing..." : "Analyze"}
           </Button>
         </form>
@@ -118,130 +144,146 @@ export const CareerAnalysis = () => {
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-            <LineChart className="h-8 w-8 text-cyan-600" />
-            Career Readiness Analysis
-          </h1>
-          <p className="text-slate-500 mt-2">
-            Deep dive into your gap analysis for <strong className="text-slate-900">{data.targetDomain}</strong>
-          </p>
-        </div>
-        
-        <form onSubmit={handleGenerate} className="flex items-center space-x-2 bg-white p-1.5 rounded-lg border border-slate-200 shadow-sm">
-          <Input 
-            placeholder="New target domain..." 
-            value={targetDomain}
-            onChange={(e) => setTargetDomain(e.target.value)}
-            className="border-0 focus-visible:ring-0 shadow-none h-9 w-[200px]"
-          />
-          <Button type="submit" disabled={isGenerating} size="sm" className="bg-slate-100 text-slate-900 hover:bg-slate-200 h-9">
-            {isGenerating ? "Analyzing..." : <><Sparkles className="h-4 w-4 mr-2 text-cyan-600" /> New Analysis</>}
-          </Button>
-        </form>
-      </div>
-
-      <motion.div 
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="grid gap-6 md:grid-cols-2"
-      >
-        {/* Strengths */}
-        <motion.div variants={itemVariants} whileHover={{ y: -2 }}>
-          <Card className="h-full border-green-200 bg-green-50/30">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-green-700">
-                <CheckCircle className="h-5 w-5" /> Your Strengths
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-3">
-                {data.strengths.map((item, i) => (
-                  <li key={i} className="flex items-start gap-2 text-slate-700 text-sm">
-                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 mt-1.5 shrink-0" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Weaknesses */}
-        <motion.div variants={itemVariants} whileHover={{ y: -2 }}>
-          <Card className="h-full border-red-200 bg-red-50/30">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-red-700">
-                <AlertTriangle className="h-5 w-5" /> Areas for Improvement
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-3">
-                {data.weaknesses.map((item, i) => (
-                  <li key={i} className="flex items-start gap-2 text-slate-700 text-sm">
-                    <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-1.5 shrink-0" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Missing Skills */}
-        <motion.div variants={itemVariants} whileHover={{ y: -2 }}>
-          <Card className="h-full border-amber-200 bg-amber-50/30">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-amber-700">
-                <Target className="h-5 w-5" /> Missing Skills
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-3">
-                {data.missingSkills.map((item, i) => (
-                  <li key={i} className="flex items-start gap-2 text-slate-700 text-sm">
-                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Learning Priorities */}
-        <motion.div variants={itemVariants} whileHover={{ y: -2 }}>
-          <Card className="h-full border-cyan-200 bg-cyan-50/30">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-cyan-700">
-                <BookOpen className="h-5 w-5" /> Learning Priorities
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-3">
-                {data.learningPriorities.map((item, i) => (
-                  <li key={i} className="flex items-start gap-2 text-slate-700 text-sm">
-                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-1.5 shrink-0" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-              
-              <div className="mt-8 pt-6 border-t border-cyan-200">
-                <Button 
-                  onClick={() => navigate(`/roadmap?domain=${encodeURIComponent(data.targetDomain)}`)}
-                  className="w-full bg-cyan-600 hover:bg-cyan-700 text-white shadow-lg shadow-cyan-600/20"
-                >
-                  Generate Custom Roadmap <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+    <div className="w-full bg-slate-50/50 min-h-full">
+      <div className="p-4 lg:p-8 max-w-7xl mx-auto space-y-8">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3 mb-2">
+              <div className="p-2 bg-blue-100 text-blue-600 rounded-lg">
+                <LineChart className="h-6 w-6" />
               </div>
-            </CardContent>
-          </Card>
+              Career Readiness Analysis
+            </h1>
+            <p className="text-slate-500 text-base">
+              Deep dive into your gap analysis for <strong className="text-slate-900 font-semibold">{data.targetDomain}</strong>
+            </p>
+          </div>
+          
+          <form onSubmit={handleGenerate} className="flex items-center space-x-2 bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm w-full lg:w-auto">
+            <Input 
+              placeholder="New target domain..." 
+              value={targetDomain}
+              onChange={(e) => setTargetDomain(e.target.value)}
+              className="border-0 focus-visible:ring-0 shadow-none h-10 w-full lg:w-[250px]"
+            />
+            <Button type="submit" disabled={isGenerating} className="bg-blue-600 hover:bg-blue-700 text-white h-10 px-5 shrink-0 rounded-lg">
+              {isGenerating ? "Analyzing..." : <><Sparkles className="h-4 w-4 mr-2" /> New Analysis</>}
+            </Button>
+          </form>
+        </div>
+
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid gap-6 md:grid-cols-2"
+        >
+          {/* Strengths */}
+          <motion.div variants={itemVariants} className="h-full">
+            <Card className="h-full border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <div className="p-1.5 rounded-md bg-green-100 text-green-600">
+                    <CheckCircle className="h-5 w-5" />
+                  </div>
+                  Your Strengths
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-4">
+                  {data.strengths.map((item, i) => (
+                    <li key={i} className="flex items-start gap-3 text-slate-700">
+                      <div className="w-1.5 h-1.5 rounded-full bg-green-500 mt-2 shrink-0" />
+                      <span className="leading-relaxed">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Weaknesses */}
+          <motion.div variants={itemVariants} className="h-full">
+            <Card className="h-full border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <div className="p-1.5 rounded-md bg-red-100 text-red-600">
+                    <AlertTriangle className="h-5 w-5" />
+                  </div>
+                  Areas for Improvement
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-4">
+                  {data.weaknesses.map((item, i) => (
+                    <li key={i} className="flex items-start gap-3 text-slate-700">
+                      <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-2 shrink-0" />
+                      <span className="leading-relaxed">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Missing Skills */}
+          <motion.div variants={itemVariants} className="h-full">
+            <Card className="h-full border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <div className="p-1.5 rounded-md bg-amber-100 text-amber-600">
+                    <Target className="h-5 w-5" />
+                  </div>
+                  Missing Skills
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-4">
+                  {data.missingSkills.map((item, i) => (
+                    <li key={i} className="flex items-start gap-3 text-slate-700">
+                      <div className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-2 shrink-0" />
+                      <span className="leading-relaxed">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Learning Priorities */}
+          <motion.div variants={itemVariants} className="h-full flex flex-col">
+            <Card className="h-full border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <div className="p-1.5 rounded-md bg-blue-100 text-blue-600">
+                    <BookOpen className="h-5 w-5" />
+                  </div>
+                  Learning Priorities
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex-1 flex flex-col">
+                <ul className="space-y-4 flex-1 mb-6">
+                  {data.learningPriorities.map((item, i) => (
+                    <li key={i} className="flex items-start gap-3 text-slate-700">
+                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 shrink-0" />
+                      <span className="leading-relaxed">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                
+                <div className="pt-6 border-t border-slate-100 mt-auto">
+                  <Button 
+                    onClick={() => navigate(`/roadmap?domain=${encodeURIComponent(data.targetDomain)}`)}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white h-11 rounded-lg"
+                  >
+                    Generate Custom Roadmap <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
         </motion.div>
-      </motion.div>
+      </div>
     </div>
   )
 }

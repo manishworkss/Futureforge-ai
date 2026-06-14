@@ -16,6 +16,7 @@ interface Milestone {
   weekNumber: number;
   title: string;
   description: string;
+  resources?: string;
   isCompleted: boolean;
 }
 
@@ -34,6 +35,13 @@ export const Roadmap = () => {
   const [targetRole, setTargetRole] = useState(prefillRole);
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [expandedResources, setExpandedResources] = useState<number[]>([]);
+
+  const toggleResources = (id: number) => {
+    setExpandedResources(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
 
   useEffect(() => {
     fetchPastRoadmaps();
@@ -240,6 +248,26 @@ export const Roadmap = () => {
                 <p className={`text-sm leading-relaxed ${milestone.isCompleted ? 'text-slate-600' : 'text-slate-500'}`}>
                   {milestone.description}
                 </p>
+                {milestone.resources && (
+                  <div className="mt-4 pt-4 border-t border-slate-100">
+                    <button 
+                      onClick={() => toggleResources(milestone.id)}
+                      className="text-xs font-semibold text-cyan-600 hover:text-cyan-700 flex items-center transition-colors"
+                    >
+                      {expandedResources.includes(milestone.id) ? 'Hide Resources' : 'View Recommended Resources'}
+                    </button>
+                    
+                    {expandedResources.includes(milestone.id) && (
+                      <motion.div 
+                        initial={{ opacity: 0, height: 0 }} 
+                        animate={{ opacity: 1, height: 'auto' }} 
+                        className="mt-3 bg-slate-50 p-3 rounded-lg border border-slate-100 text-sm text-slate-700 whitespace-pre-line"
+                      >
+                        {milestone.resources}
+                      </motion.div>
+                    )}
+                  </div>
+                )}
               </div>
             </motion.div>
           ))}

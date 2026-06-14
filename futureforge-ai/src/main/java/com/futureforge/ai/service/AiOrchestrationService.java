@@ -49,7 +49,7 @@ public class AiOrchestrationService {
 
         String userMessage = String.format("## Current Neural Profile:\n%s\n\nGenerate optimal domain trajectories.", profileContext);
 
-        return groqAiService.chat(systemPrompt, userMessage);
+        return groqAiService.chatAsJson(systemPrompt, userMessage);
     }
 
     public String generateCareerAnalysis(User user, String targetDomain) {
@@ -72,7 +72,7 @@ public class AiOrchestrationService {
 
         String userMessage = String.format("## Profile Data:\n%s\n\n## Target Domain:\n%s\n\nExecute gap analysis.", profileContext, targetDomain);
 
-        return groqAiService.chat(systemPrompt, userMessage);
+        return groqAiService.chatAsJson(systemPrompt, userMessage);
     }
 
     public String generateRoadmap(User user, String targetRole, String preferences) {
@@ -90,6 +90,7 @@ public class AiOrchestrationService {
                 Design a realistic, step-by-step learning roadmap for the user to secure the Target Role.
                 You must explicitly address the "Identified Weaknesses" from their gap analysis.
                 Make the milestones progressive and highly technical. Avoid vague advice.
+                IMPORTANT: For the 'resources' field in each milestone, provide REAL, SPECIFIC, and HIGH-QUALITY resources. You MUST include actual URLs. If you recommend a video, include a link to the YouTube channel or video. If you recommend a course, doc, or website, provide the direct website link.
                 
                 Your response MUST be exactly in the following JSON format ONLY, without markdown tags like ```json:
                 {
@@ -102,7 +103,7 @@ public class AiOrchestrationService {
                             "weekNumber": 1,
                             "title": "Containerization Mastery",
                             "description": "Learn Docker basics, write Dockerfiles for existing Spring apps, and setup docker-compose.",
-                            "resources": "Docker Official Docs, 'Docker Mastery' course"
+                            "resources": "1. TechWorld with Nana (YouTube): https://www.youtube.com/c/TechWorldwithNana\\n2. Docker Official Docs: https://docs.docker.com/"
                         }
                     ]
                 }
@@ -123,10 +124,10 @@ public class AiOrchestrationService {
                 Generate the curriculum matrix.
                 """, profileContext, targetRole, analysisContext, (preferences != null ? preferences : "None"));
 
-        return groqAiService.chat(systemPrompt, userMessage);
+        return groqAiService.chatAsJson(systemPrompt, userMessage);
     }
 
-    public String generateMentorChatResponse(User user) {
+    public String generateMentorChatResponse(User user, Long sessionId) {
         String profileContext = profileService.buildProfileContext(user);
         
         List<CareerAnalysis> analyses = careerAnalysisRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
@@ -164,10 +165,14 @@ public class AiOrchestrationService {
                 %s
                 """, profileContext, analysisContext, roadmapContext);
 
-        // Fetch recent history (limit to 10 for tight context window)
-        List<ChatMessage> rawHistory = chatMessageRepository.findTop20ByUserIdOrderByCreatedAtDesc(user.getId());
-        List<ChatMessage> history = new ArrayList<>(rawHistory.subList(0, Math.min(10, rawHistory.size())));
-        java.util.Collections.reverse(history); // Chronological order
+        // Fetch recent history for this specific session
+        List<ChatMessage> history = new ArrayList<>();
+        if (sessionId != null) {
+            List<ChatMessage> rawHistory = chatMessageRepository.findByChatSessionIdOrderByCreatedAtAsc(sessionId);
+            // take last 10 messages for context
+            int startIndex = Math.max(0, rawHistory.size() - 10);
+            history = rawHistory.subList(startIndex, rawHistory.size());
+        }
         
         List<Map<String, String>> messages = new ArrayList<>();
         messages.add(Map.of("role", "system", "content", systemPrompt));
@@ -180,5 +185,32 @@ public class AiOrchestrationService {
         }
 
         return groqAiService.chatWithHistory(messages);
+    }
+
+    public String parseResumeToProfile(String resumeText) {
+        String systemPrompt = """
+                You are 'Oracle', an elite AI data extractor.
+                Parse the provided resume text and extract the candidate's details.
+                Map the extracted data EXACTLY to the following JSON format.
+                Do NOT include any markdown formatting or extra text. Only JSON.
+                
+                {
+                    "bio": "A brief summary extracted from the resume",
+                    "education": "Degree, Major, and University",
+                    "semester": 0,
+                    "careerGoal": "Inferred or stated career goals",
+                    "skills": ["Java", "Python", "React", "Docker"],
+                    "interests": ["Machine Learning", "Open Source"],
+                    "linkedinUrl": "https://linkedin.com/in/... (if found)",
+                    "githubUrl": "https://github.com/... (if found)",
+                    "leetcodeUrl": "https://leetcode.com/... (if found)",
+                    "portfolioUrl": "https://... (if found, excluding the above)"
+                }
+                
+                Note: 'semester' should be an integer from 1-10 if mentioned, otherwise 0.
+                """;
+
+        String userMessage = "Here is the raw resume text:\\n\\n" + resumeText;
+        return groqAiService.chatAsJson(systemPrompt, userMessage);
     }
 }

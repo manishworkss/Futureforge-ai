@@ -41,7 +41,21 @@ public class GroqAiService {
         List<Map<String, String>> messages = new ArrayList<>();
         messages.add(Map.of("role", "system", "content", systemPrompt));
         messages.add(Map.of("role", "user", "content", userMessage));
-        return sendRequest(messages);
+        return sendRequest(messages, false);
+    }
+
+    /**
+     * Send a chat completion request to Groq API with JSON mode enabled.
+     *
+     * @param systemPrompt the system-level instruction (mega context)
+     * @param userMessage  the user's specific prompt
+     * @return the AI assistant's response in valid JSON
+     */
+    public String chatAsJson(String systemPrompt, String userMessage) {
+        List<Map<String, String>> messages = new ArrayList<>();
+        messages.add(Map.of("role", "system", "content", systemPrompt));
+        messages.add(Map.of("role", "user", "content", userMessage));
+        return sendRequest(messages, true);
     }
 
     /**
@@ -51,16 +65,20 @@ public class GroqAiService {
      * @return the AI assistant's response text
      */
     public String chatWithHistory(List<Map<String, String>> messages) {
-        return sendRequest(messages);
+        return sendRequest(messages, false);
     }
 
-    private String sendRequest(List<Map<String, String>> messages) {
+    private String sendRequest(List<Map<String, String>> messages, boolean jsonMode) {
         try {
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("model", model);
             requestBody.put("messages", messages);
             requestBody.put("max_tokens", maxTokens);
             requestBody.put("temperature", temperature);
+            
+            if (jsonMode) {
+                requestBody.put("response_format", Map.of("type", "json_object"));
+            }
 
             String responseBody = groqWebClient.post()
                     .bodyValue(requestBody)

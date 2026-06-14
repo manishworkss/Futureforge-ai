@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
@@ -8,7 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from 'sonner'
 import api from '@/lib/api'
 import { motion } from 'framer-motion'
-import { User, Save, Target, Sparkles, GitBranch, Link as LinkIcon, Code, Globe } from 'lucide-react'
+import { User, Save, Target, Sparkles, GitBranch, Link as LinkIcon, Code, Globe, Upload } from 'lucide-react'
 
 interface ProfileData {
   id?: number;
@@ -42,6 +42,8 @@ export const Profile = () => {
   const [interestsInput, setInterestsInput] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchProfile();
@@ -72,6 +74,52 @@ export const Profile = () => {
       }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      toast.info('Extracting neural data from resume...');
+      const response = await api.post('/api/profile/upload-resume', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
+      const parsedData = JSON.parse(response.data.data);
+      
+      setProfile(prev => ({
+        ...prev,
+        bio: parsedData.bio || prev.bio,
+        education: parsedData.education || prev.education,
+        semester: parsedData.semester || prev.semester,
+        careerGoal: parsedData.careerGoal || prev.careerGoal,
+        linkedinUrl: parsedData.linkedinUrl || prev.linkedinUrl,
+        githubUrl: parsedData.githubUrl || prev.githubUrl,
+        leetcodeUrl: parsedData.leetcodeUrl || prev.leetcodeUrl,
+        portfolioUrl: parsedData.portfolioUrl || prev.portfolioUrl
+      }));
+      
+      if (parsedData.skills && parsedData.skills.length > 0) {
+        setSkillsInput(parsedData.skills.join(', '));
+      }
+      if (parsedData.interests && parsedData.interests.length > 0) {
+        setInterestsInput(parsedData.interests.join(', '));
+      }
+      
+      toast.success('Resume parsed successfully! Please review and sync your data.');
+    } catch (error: any) {
+      toast.error('Failed to parse resume: ' + (error.response?.data?.message || error.message));
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
@@ -151,11 +199,31 @@ export const Profile = () => {
         {/* Profile Form */}
         <div className="lg:col-span-2">
           <form onSubmit={handleSave} className="bg-white backdrop-blur-xl border border-slate-200 shadow-[0_0_40px_-10px_rgba(6,182,212,0.2)] rounded-[2rem] overflow-hidden">
-            <div className="p-6 sm:p-8 border-b border-slate-100 bg-slate-50">
-              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                Core Parameters
-              </h2>
-              <p className="text-slate-600 text-sm mt-1">Foundational attributes for your career trajectory.</p>
+            <div className="p-6 sm:p-8 border-b border-slate-100 bg-slate-50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                  Core Parameters
+                </h2>
+                <p className="text-slate-600 text-sm mt-1">Foundational attributes for your career trajectory.</p>
+              </div>
+              <div>
+                <input 
+                  type="file" 
+                  accept=".pdf" 
+                  ref={fileInputRef} 
+                  onChange={handleFileUpload} 
+                  className="hidden" 
+                />
+                <Button 
+                  type="button" 
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isUploading}
+                  variant="outline"
+                  className="border-cyan-200 text-cyan-700 hover:bg-cyan-50 bg-white"
+                >
+                  {isUploading ? "Processing..." : <><Upload className="w-4 h-4 mr-2" /> Auto-Fill via Resume</>}
+                </Button>
+              </div>
             </div>
             
             <div className="p-6 sm:p-8 space-y-8">

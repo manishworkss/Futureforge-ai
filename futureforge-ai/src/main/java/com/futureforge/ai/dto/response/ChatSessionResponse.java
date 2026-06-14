@@ -1,6 +1,5 @@
 package com.futureforge.ai.dto.response;
 
-import com.futureforge.ai.entity.enums.MessageRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,11 +11,9 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatMessageResponse {
-
+public class ChatSessionResponse {
     private Long id;
-    private Long sessionId;
-    private MessageRole role;
-    private String content;
+    private String title;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

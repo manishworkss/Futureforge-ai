@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ChatMessageRequest {
 
+    private Long sessionId;
+
     @NotBlank(message = "Message content is required")
     private String content;
 }
