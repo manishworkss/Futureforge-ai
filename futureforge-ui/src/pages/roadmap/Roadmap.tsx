@@ -86,16 +86,8 @@ export const Roadmap = () => {
       return;
     }
 
-    setIsGenerating(true);
-    try {
-      const response = await api.post('/api/roadmaps/generate', { targetRole });
-      setData(response.data.data);
-      toast.success('Roadmap generated!');
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to generate roadmap');
-    } finally {
-      setIsGenerating(false);
-    }
+    // Instead of generating immediately, route to the assessment phase
+    navigate(`/roadmap/assessment?domain=${encodeURIComponent(targetRole)}`);
   };
 
   const toggleMilestone = async (milestoneId: number) => {

@@ -11,6 +11,7 @@ import { Profile } from './pages/profile/Profile'
 import { DomainRecommendation } from './pages/domains/DomainRecommendation'
 import { CareerAnalysis } from './pages/analysis/CareerAnalysis'
 import { Roadmap } from './pages/roadmap/Roadmap'
+import { Assessment } from './pages/roadmap/Assessment'
 import { Chat } from './pages/chat/Chat'
 import { Toaster } from './components/ui/sonner'
 
@@ -34,6 +35,7 @@ function App() {
           <Route path="/domains" element={<DomainRecommendation />} />
           <Route path="/analysis" element={<CareerAnalysis />} />
           <Route path="/roadmap" element={<Roadmap />} />
+          <Route path="/roadmap/assessment" element={<Assessment />} />
           <Route path="/chat" element={<Chat />} />
         </Route>
         

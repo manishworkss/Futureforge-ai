@@ -44,7 +44,7 @@ public class RoadmapService {
         }
 
         log.info("Generating roadmap for user: {} targeting: {}", user.getEmail(), request.getTargetRole());
-        String aiResponse = aiOrchestrationService.generateRoadmap(user, request.getTargetRole(), preferences);
+        String aiResponse = aiOrchestrationService.generateRoadmap(user, request.getTargetRole(), preferences, request.getAssessmentContext());
 
         // Parse AI response and create roadmap
         Roadmap roadmap = Roadmap.builder()

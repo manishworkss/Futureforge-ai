@@ -75,27 +75,28 @@ public class AiOrchestrationService {
         return groqAiService.chatAsJson(systemPrompt, userMessage);
     }
 
-    public String generateRoadmap(User user, String targetRole, String preferences) {
+    public String generateRoadmap(User user, String targetRole, String preferences, String assessmentContext) {
         String profileContext = profileService.buildProfileContext(user);
         
         List<CareerAnalysis> analyses = careerAnalysisRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
         String analysisContext = "No prior gap analysis detected.";
         if (!analyses.isEmpty()) {
             CareerAnalysis latest = analyses.get(0);
-            analysisContext = "Identified Weaknesses: " + latest.getWeaknesses() + "\nAnalysis Summary: " + latest.getAnalysisResult();
+            analysisContext = "Identified Weaknesses: " + latest.getWeaknesses() + "\\nAnalysis Summary: " + latest.getAnalysisResult();
         }
 
         String systemPrompt = """
                 You are 'Oracle', an elite IT Curriculum Architect AI.
                 Design a realistic, step-by-step learning roadmap for the user to secure the Target Role.
                 You must explicitly address the "Identified Weaknesses" from their gap analysis.
+                You MUST deeply incorporate the "Assessment Performance" into your roadmap. Adjust the difficulty and skip basics if they scored well, or add remedial phases if they scored poorly.
                 Make the milestones progressive and highly technical. Avoid vague advice.
                 IMPORTANT: For the 'resources' field in each milestone, provide REAL, SPECIFIC, and HIGH-QUALITY resources. You MUST include actual URLs. If you recommend a video, include a link to the YouTube channel or video. If you recommend a course, doc, or website, provide the direct website link.
                 
                 Your response MUST be exactly in the following JSON format ONLY, without markdown tags like ```json:
                 {
                     "title": "Full Stack Migration Architect Roadmap",
-                    "description": "An intense 12-week trajectory focusing on fixing CI/CD gaps and mastering cloud deployments.",
+                    "description": "An intense trajectory focusing on fixing CI/CD gaps based on your assessment.",
                     "difficultyLevel": "INTERMEDIATE",
                     "estimatedWeeks": 12,
                     "milestones": [
@@ -118,12 +119,74 @@ public class AiOrchestrationService {
                 ## Strategic Context (Weaknesses to address):
                 %s
                 
+                ## Assessment Performance:
+                %s
+                
                 ## User Preferences:
                 %s
                 
                 Generate the curriculum matrix.
-                """, profileContext, targetRole, analysisContext, (preferences != null ? preferences : "None"));
+                """, profileContext, targetRole, analysisContext, (assessmentContext != null ? assessmentContext : "No assessment taken"), (preferences != null ? preferences : "None"));
 
+        return groqAiService.chatAsJson(systemPrompt, userMessage);
+    }
+
+    public String evaluateCodeSnippet(String taskTitle, String taskDescription, String codeSnippet) {
+        String systemPrompt = """
+                You are 'Oracle', an elite automated code compiler and evaluator.
+                Your job is to analyze the user's code snippet for the given task.
+                Identify if the code contains syntax errors, logic errors, or if it successfully solves the problem.
+                Return your response EXACTLY in the following JSON format ONLY, without markdown tags like ```json:
+                {
+                    "isCorrect": true,
+                    "compilerOutput": "Build Successful! All 5/5 hidden test cases passed.\\nRuntime: 45ms\\nMemory: 32MB",
+                    "feedback": "Great use of the map function. Consider using a Set next time to improve time complexity to O(N)."
+                }
+                If there is an error, return something like:
+                {
+                    "isCorrect": false,
+                    "compilerOutput": "SyntaxError: Unexpected token ';' at line 4.\\n    at execute (vm.js:12:33)",
+                    "feedback": "You have a syntax error. Check your loop conditions and ensure all brackets are closed."
+                }
+                Make the compilerOutput look like real terminal/console output.
+                """;
+
+        String userMessage = String.format("## Task: %s\n## Description: %s\n\n## User Code:\n%s", taskTitle, taskDescription, codeSnippet);
+        return groqAiService.chatAsJson(systemPrompt, userMessage);
+    }
+
+    public String generateAssessment(String domain) {
+        String systemPrompt = """
+                You are 'Oracle', an elite technical recruiter and examiner.
+                Create a skill assessment test for the given domain.
+                The test MUST contain exactly 10 multiple-choice questions (5 'easy' and 5 'hard').
+                The test MUST contain exactly 2 coding/technical short-answer questions.
+                
+                Your response MUST be exactly in the following JSON format ONLY, without markdown tags like ```json:
+                {
+                    "mcqs": [
+                        {
+                            "question": "What is the primary purpose of a reverse proxy?",
+                            "options": [
+                                "To act as a firewall",
+                                "To distribute client requests to backend servers",
+                                "To store session state",
+                                "To encrypt database traffic"
+                            ],
+                            "correctOptionIndex": 1,
+                            "difficulty": "easy"
+                        }
+                    ],
+                    "coding": [
+                        {
+                            "title": "Reverse a Linked List",
+                            "description": "Write a function to reverse a singly linked list in-place."
+                        }
+                    ]
+                }
+                """;
+
+        String userMessage = "Generate assessment for Domain: " + domain;
         return groqAiService.chatAsJson(systemPrompt, userMessage);
     }
 

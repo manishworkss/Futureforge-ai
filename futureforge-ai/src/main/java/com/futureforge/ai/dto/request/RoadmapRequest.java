@@ -20,4 +20,6 @@ public class RoadmapRequest {
     private Integer desiredWeeks;
 
     private String additionalPreferences;
+
+    private String assessmentContext;
 }
