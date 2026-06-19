@@ -14,6 +14,7 @@ export const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const handleGoogleLogin = () => {
     window.location.href = 'http://localhost:8080/oauth2/authorization/google'
@@ -24,7 +25,7 @@ export const Login = () => {
     setIsLoading(true);
     
     try {
-      const response = await api.post('/api/auth/login', { email, password });
+      const response = await api.post('/api/auth/login', { email, password, rememberMe });
       const { token } = response.data.data;
       if (token) {
         localStorage.setItem('accessToken', token);
@@ -120,7 +121,7 @@ export const Login = () => {
             </div>
 
             <div className="flex items-center space-x-3 pt-2 pb-4">
-              <Switch id="remember-me" className="data-[state=checked]:bg-cyan-500 border-slate-200" />
+              <Switch id="remember-me" checked={rememberMe} onCheckedChange={setRememberMe} className="data-[state=checked]:bg-cyan-500 border-slate-200" />
               <Label htmlFor="remember-me" className="text-sm text-slate-600 cursor-pointer">Remember me for 30 days</Label>
             </div>
 

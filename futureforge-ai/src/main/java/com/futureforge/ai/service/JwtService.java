@@ -36,7 +36,12 @@ public class JwtService {
     }
 
     public String generateAccessToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails, accessTokenExpiration);
+        return generateAccessToken(userDetails, false);
+    }
+
+    public String generateAccessToken(UserDetails userDetails, boolean rememberMe) {
+        long expiration = rememberMe ? 30L * 24 * 60 * 60 * 1000 : accessTokenExpiration; // 30 days vs default
+        return generateToken(new HashMap<>(), userDetails, expiration);
     }
 
     public String generateRefreshToken(UserDetails userDetails) {

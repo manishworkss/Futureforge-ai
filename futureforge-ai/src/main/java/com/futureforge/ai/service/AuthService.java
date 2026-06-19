@@ -96,7 +96,7 @@ public class AuthService {
         logAudit(user.getEmail(), "LOGIN_SUCCESS", ipAddress);
         log.info("User logged in: {}", user.getEmail());
 
-        return buildAuthResponse(user);
+        return buildAuthResponse(user, request.isRememberMe());
     }
 
     public AuthResponse.UserResponse getCurrentUser(User user) {
@@ -109,12 +109,17 @@ public class AuthService {
     }
 
     public AuthResponse buildAuthResponse(User user) {
-        String accessToken = jwtService.generateAccessToken(user);
+        return buildAuthResponse(user, false);
+    }
+
+    public AuthResponse buildAuthResponse(User user, boolean rememberMe) {
+        String accessToken = jwtService.generateAccessToken(user, rememberMe);
+        long expiresIn = rememberMe ? 30L * 24 * 60 * 60 * 1000 : jwtService.getAccessTokenExpiration();
 
         return AuthResponse.builder()
                 .token(accessToken)
                 .tokenType("Bearer")
-                .expiresIn(jwtService.getAccessTokenExpiration())
+                .expiresIn(expiresIn)
                 .user(AuthResponse.UserResponse.builder()
                         .id(user.getId())
                         .fullName(user.getFullName())
