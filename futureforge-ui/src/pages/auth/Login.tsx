@@ -17,7 +17,8 @@ export const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
 
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:8080/oauth2/authorization/google'
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+    window.location.href = `${API_URL}/oauth2/authorization/google`;
   }
 
   const handleLogin = async (e: React.FormEvent) => {
