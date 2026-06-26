@@ -21,15 +21,15 @@ spring:
       client:
         registration:
           google:
-            client-id: ${GOOGLE_CLIENT_ID}
-            client-secret: ${GOOGLE_CLIENT_SECRET}
+            client-id: ${GOOGLE_CLIENT_ID:YOUR_GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET:YOUR_GOOGLE_CLIENT_SECRET}
             scope: profile, email
 
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
+    username: ${MAIL_USERNAME:bcawithmanish0008@gmail.com}
+    password: ${MAIL_PASSWORD:lryzrevyrjcsraxe}
     properties:
       mail:
         smtp:
@@ -38,13 +38,13 @@ spring:
             enable: true
 
 jwt:
-  secret: ${JWT_SECRET}
+  secret: ${JWT_SECRET:FutureForgeAI2024SecretKeyForJWTTokenGenerationAndValidationMustBeLongEnough256Bits}
   access-token-expiration: 86400000    # 24 hours
   refresh-token-expiration: 604800000  # 7 days
 
 groq:
   api:
-    key: ${GROQ_API_KEY}
+    key: ${GROQ_API_KEY:YOUR_GROQ_API_KEY}
     url: https://api.groq.com/openai/v1/chat/completions
     model: llama-3.3-70b-versatile
 

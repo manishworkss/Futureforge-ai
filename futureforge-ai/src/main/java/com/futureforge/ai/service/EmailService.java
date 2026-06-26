@@ -34,8 +34,11 @@ public class EmailService {
             mailSender.send(message);
             log.info("OTP email successfully sent to {}", to);
         } catch (Exception e) {
-            log.error("Failed to send OTP email to {}", to, e);
-            // Swallowing exception for async task to avoid thread crash
+            log.error("Failed to send OTP email to {}", to, e.getMessage());
+            log.warn("==========================================================");
+            log.warn("📧 [LOCAL DEV MODE] Email sending failed (SMTP not configured)");
+            log.warn("🔑 Your verification OTP code for [{}] is: {}", to, otp);
+            log.warn("==========================================================");
         }
     }
 }
