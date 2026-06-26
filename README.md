@@ -30,6 +30,20 @@ Designed with enterprise SaaS standards, FutureForge AI features multi-modal aut
 
 ---
 
+## 📸 Executive Project Showcase Gallery
+
+| 🔐 Multi-Modal Auth & Google SSO | 🧬 Neural Profile Matrix & Resume AI |
+| :---: | :---: |
+| ![Auth & SSO](assets/showcase/auth.png) | ![Neural Profile](assets/showcase/profile.png) |
+| **Google OAuth2 1-Click SSO & OTP Email Verification** | **AI-Driven Candidate Matrix & PDF Resume Extraction** |
+
+| 💬 Conversational AI Mentor (Oracle) | 🗺️ Dynamic Roadmap & Skills Dashboard |
+| :---: | :---: |
+| ![AI Chat Oracle](assets/showcase/chat.png) | ![Executive Roadmap](assets/showcase/roadmap.png) |
+| **Low-Latency Coding Mentorship & Code Snippets** | **Multi-Week Learning Curriculums & Analytics** |
+
+---
+
 ## 🏛️ System Architecture & Cloud Infrastructure
 
 ```mermaid
