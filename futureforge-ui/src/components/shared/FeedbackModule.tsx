@@ -52,7 +52,7 @@ export const FeedbackModule = () => {
         <Button 
           variant="default" 
           size="icon" 
-          className="fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-xl bg-slate-900 hover:bg-slate-800 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-200 z-50 hover:scale-105 transition-transform"
+          className="fixed bottom-24 sm:bottom-6 right-4 sm:right-6 w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-xl bg-slate-900 hover:bg-slate-800 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-200 z-50 hover:scale-105 transition-transform"
         >
           <MessageSquarePlus className="w-6 h-6" />
         </Button>
