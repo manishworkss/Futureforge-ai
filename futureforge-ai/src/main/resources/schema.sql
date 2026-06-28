@@ -3,8 +3,8 @@
 -- MySQL 8.x
 -- ============================================
 
-CREATE DATABASE IF NOT EXISTS futureforge_db;
-USE futureforge_db;
+-- CREATE DATABASE IF NOT EXISTS futureforge_db;
+-- USE futureforge_db;
 
 -- ============================================
 -- 1. Users Table
