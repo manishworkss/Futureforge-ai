@@ -10,7 +10,7 @@ export const AppLayout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="relative flex h-screen w-full overflow-hidden bg-white font-sans text-slate-900">
+    <div className="relative flex h-screen max-h-[100dvh] w-full overflow-hidden bg-white font-sans text-slate-900">
       
       {/* Global Background Gradients */}
       <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-cyan-400/20 blur-[120px] mix-blend-multiply animate-pulse duration-10000 pointer-events-none z-0"></div>
@@ -26,8 +26,9 @@ export const AppLayout = () => {
           <div className="md:hidden flex items-center">
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
-                <button className="p-2 -ml-2 text-slate-600 hover:text-slate-900">
-                  <Menu className="w-6 h-6" />
+                <button className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200/80 text-slate-900 font-semibold text-sm shadow-sm transition-all active:scale-95">
+                  <Menu className="w-5 h-5 text-cyan-600" />
+                  <span>Menu</span>
                 </button>
               </SheetTrigger>
               <SheetContent side="left" className="p-0 w-64 border-r-0">
@@ -61,7 +62,7 @@ export const AppLayout = () => {
           </div>
         </header>
 
-        <main className="flex-1 overflow-auto custom-scrollbar relative z-10">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar relative z-10 [-webkit-overflow-scrolling:touch]">
           <Outlet />
         </main>
       </div>
