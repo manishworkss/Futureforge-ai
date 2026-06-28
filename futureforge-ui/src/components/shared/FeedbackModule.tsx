@@ -39,7 +39,7 @@ export const FeedbackModule = ({ trigger }: { trigger?: React.ReactNode }) => {
           setComment('');
         }, 300);
       }, 2000);
-    } catch (error) {
+    } catch {
       toast.error('Failed to submit feedback. Please try again.');
     } finally {
       setIsSubmitting(false);
