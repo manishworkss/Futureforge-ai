@@ -6,7 +6,7 @@
 
 [![Live Demo](https://img.shields.io/badge/🚀_Live_Production_Demo-futureforge--ai--sage.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://futureforge-ai-sage.vercel.app)
 [![API Status](https://img.shields.io/badge/⚡_Backend_API-Render_Cloud_Live-46E3B7?style=for-the-badge&logo=render&logoColor=black)](https://futureforge-ai-s2ha.onrender.com)
-[![AI Engine](https://img.shields.io/badge/🤖_AI_Engine-GPT_OSS_20B-F97316?style=for-the-badge&logo=openai&logoColor=white)](https://groq.com)
+[![AI Engine](https://img.shields.io/badge/🤖_AI_Engine-Llama_3.3_70B_Versatile-F97316?style=for-the-badge&logo=meta&logoColor=white)](https://groq.com)
 
 <p>
   <img src="https://img.shields.io/badge/Spring%20Boot-3.3.0-6DB33F.svg?style=flat-square&logo=spring-boot&logoColor=white" alt="Spring Boot">
@@ -24,7 +24,7 @@
 
 ## 🌟 Executive Project Overview
 
-**FutureForge AI** is a state-of-the-art career progression ecosystem engineered to solve the disconnect between academic curricula and rapidly evolving tech industry demands. By combining deep neural profile analysis with low-latency LLM inference (**Groq Cloud GPT OSS 20B**), the system synthesizes hyper-personalized career roadmaps, evaluates resume PDFs, matches candidates to high-growth tech sectors, and provides continuous conversational guidance.
+**FutureForge AI** is a state-of-the-art career progression ecosystem engineered to solve the disconnect between academic curricula and rapidly evolving tech industry demands. By combining deep neural profile analysis with low-latency LLM inference (**Groq Cloud Llama-3.3 70B**), the system synthesizes hyper-personalized career roadmaps, evaluates resume PDFs, matches candidates to high-growth tech sectors, and provides continuous conversational guidance.
 
 Designed with enterprise SaaS standards, FutureForge AI features multi-modal authentication (**Google OAuth2 + OTP Verified Email Sign-Up**), dual-delivery transactional emailing, containerized cloud backend orchestration, and responsive glassmorphic frontend engineering.
 
@@ -53,7 +53,7 @@ graph TD
     
     subgraph Core Cloud Ecosystem
         Render <-->|SSL / Hibernate JPA| MySQL[(🐬 Aiven Cloud DB<br/>MySQL 8.0 Cluster)]
-        Render <-->|Ultra-Fast REST Inference| Groq[⚡ Groq Neural Engine<br/>GPT OSS 20B Model]
+        Render <-->|Ultra-Fast REST Inference| Groq[⚡ Groq Neural Engine<br/>Llama-3.3 70B Model]
         Render -->|HTTPS Port 443 Fallback| Brevo[📨 Brevo REST API<br/>Transactional OTP Mailer]
         Render <-->|OAuth2 Token Exchange| Google[🔐 Google Cloud IAM<br/>OAuth2 SSO Provider]
     end
@@ -65,7 +65,7 @@ graph TD
 | :--- | :--- | :--- |
 | **Frontend UI** | **React 18, Vite, TypeScript, Tailwind CSS, Lucide Icons** | Glassmorphism design system, SPA dynamic routing with catch-all CDN fallbacks, reactive state binding. |
 | **Backend API** | **Java 17, Spring Boot 3.3, Spring Security, Spring Data JPA** | RESTful architectural patterns, stateless filter chains, HikariCP connection pooling, PDF stream generation. |
-| **AI & Inference**| **Groq Cloud API, GPT OSS 20B** | Sub-second deterministic career matrix evaluations, automated PDF resume semantic extraction. |
+| **AI & Inference**| **Groq Cloud API, Meta Llama-3.3-70B-Versatile** | Sub-second deterministic career matrix evaluations, automated PDF resume semantic extraction. |
 | **Auth & Security**| **Google OAuth2 SSO, Cryptographic JWT, Brevo HTTP API** | Dual-strategy OTP verification (bypassing cloud SMTP firewalls), BCrypt password hashing, CORS policies. |
 | **DevOps & Cloud**| **Docker, Render Web Services, Vercel Edge, Aiven DB** | Multi-stage Dockerfile builds, production profile injection, zero-downtime CI/CD pipelines. |
 
