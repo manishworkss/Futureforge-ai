@@ -7,7 +7,7 @@ import { MessageSquarePlus, Star, Send } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import api from '@/lib/api'
 
-export const FeedbackModule = () => {
+export const FeedbackModule = ({ trigger }: { trigger?: React.ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
@@ -49,13 +49,17 @@ export const FeedbackModule = () => {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <Button 
-          variant="default" 
-          size="icon" 
-          className="fixed bottom-24 sm:bottom-6 right-4 sm:right-6 w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-xl bg-slate-900 hover:bg-slate-800 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-200 z-50 hover:scale-105 transition-transform"
-        >
-          <MessageSquarePlus className="w-6 h-6" />
-        </Button>
+        {trigger ? (
+          trigger
+        ) : (
+          <Button 
+            variant="default" 
+            size="icon" 
+            className="fixed bottom-24 sm:bottom-6 right-4 sm:right-6 w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-xl bg-slate-900 hover:bg-slate-800 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-200 z-50 hover:scale-105 transition-transform"
+          >
+            <MessageSquarePlus className="w-6 h-6" />
+          </Button>
+        )}
       </SheetTrigger>
       <SheetContent side="right" className="w-[400px] sm:w-[540px] border-slate-200 dark:border-slate-800 flex flex-col">
         <SheetHeader>

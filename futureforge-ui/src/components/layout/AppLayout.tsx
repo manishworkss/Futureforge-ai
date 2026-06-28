@@ -3,7 +3,6 @@ import { Outlet } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Bell, Search, Menu } from 'lucide-react'
-import { FeedbackModule } from '../shared/FeedbackModule'
 import { motion } from 'framer-motion'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 
@@ -66,7 +65,6 @@ export const AppLayout = () => {
           <Outlet />
         </main>
       </div>
-      <FeedbackModule />
     </div>
   )
 }

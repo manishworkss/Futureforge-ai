@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
-import { Target, Trophy, Clock, TrendingUp, Sparkles, Map, ArrowRight } from 'lucide-react'
+import { Target, Trophy, Clock, TrendingUp, Sparkles, Map, ArrowRight, MessageSquarePlus, HelpCircle, Lightbulb, Cpu } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { motion } from 'framer-motion'
 import api from '@/lib/api'
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { FeedbackModule } from '@/components/shared/FeedbackModule'
 
 export const Dashboard = () => {
   const navigate = useNavigate();
@@ -297,6 +299,107 @@ export const Dashboard = () => {
             </Card>
           </motion.div>
         </div>
+
+        {/* Dashboard Footer & AI Support Hub */}
+        <motion.div 
+          className="mt-8 p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white shadow-xl border border-indigo-800/50 flex flex-col sm:flex-row items-center justify-between gap-6"
+          initial={{ opacity: 0, y: 20 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ duration: 0.6, delay: 0.6 }}
+        >
+          <div className="space-y-1 text-center sm:text-left">
+            <div className="flex items-center justify-center sm:justify-start gap-2 text-cyan-400 font-semibold">
+              <Sparkles className="w-5 h-5" />
+              <span>FutureForge AI Assistant Hub</span>
+            </div>
+            <p className="text-sm text-slate-300 max-w-xl">
+              Need guidance on how our neural engine works or want to share ideas? Explore our AI creation guide or send feedback directly to our engineering team.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 shrink-0">
+            {/* Help Assist Modal Sheet */}
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" className="bg-white/10 hover:bg-white/20 border-white/20 text-white gap-2 font-medium">
+                  <HelpCircle className="w-4 h-4 text-cyan-400" />
+                  Help & AI Guide
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[400px] sm:w-[540px] border-slate-200 dark:border-slate-800 flex flex-col overflow-y-auto">
+                <SheetHeader>
+                  <SheetTitle className="text-2xl font-bold flex items-center gap-2">
+                    <Sparkles className="w-6 h-6 text-cyan-500" />
+                    How FutureForge AI Works
+                  </SheetTitle>
+                  <SheetDescription>
+                    Understand how our AI engine creates your personalized career architecture.
+                  </SheetDescription>
+                </SheetHeader>
+
+                <div className="space-y-6 py-6 text-slate-700 dark:text-slate-300 flex-1">
+                  <div className="p-4 rounded-xl bg-cyan-50 dark:bg-cyan-950/30 border border-cyan-200 dark:border-cyan-800 space-y-2">
+                    <h4 className="font-semibold text-cyan-900 dark:text-cyan-200 flex items-center gap-2">
+                      <Cpu className="w-4 h-4 text-cyan-600" />
+                      Powered by GPT OSS 20B
+                    </h4>
+                    <p className="text-sm text-cyan-800 dark:text-cyan-300 leading-relaxed">
+                      Our backend leverages high-speed neural processing to analyze market trends, skill gaps, and role requirements in real time.
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                      <Lightbulb className="w-5 h-5 text-amber-500" />
+                      How Everything is Created
+                    </h4>
+
+                    <div className="space-y-3">
+                      <div className="flex gap-3 items-start">
+                        <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</div>
+                        <div>
+                          <p className="font-medium text-sm text-slate-900 dark:text-slate-100">Complete Your Profile</p>
+                          <p className="text-xs text-slate-500">Add your existing skills, education, and target career goal. This acts as the blueprint for the AI.</p>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-3 items-start">
+                        <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</div>
+                        <div>
+                          <p className="font-medium text-sm text-slate-900 dark:text-slate-100">Generate Career Roadmaps</p>
+                          <p className="text-xs text-slate-500">Go to Roadmaps and click Generate. The AI crafts step-by-step milestones, recommended certifications, and timeline estimates.</p>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-3 items-start">
+                        <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</div>
+                        <div>
+                          <p className="font-medium text-sm text-slate-900 dark:text-slate-100">AI Oracle Mentorship</p>
+                          <p className="text-xs text-slate-500">Use the interactive chat to ask interview questions, salary advice, or request code reviews from your 24/7 Oracle Mentor.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-2">
+                    <h4 className="font-semibold text-slate-900 dark:text-white text-sm">💡 Pro Tip for Best Results</h4>
+                    <p className="text-xs text-slate-600 dark:text-slate-400">
+                      Keep your resume skills updated! The more detailed your profile is, the more accurate and tailored your AI recommendations and roadmaps will be.
+                    </p>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+
+            {/* Give Feedback Trigger Button */}
+            <FeedbackModule trigger={
+              <Button className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold gap-2 shadow-lg shadow-cyan-500/20">
+                <MessageSquarePlus className="w-4 h-4" />
+                Give Feedback
+              </Button>
+            } />
+          </div>
+        </motion.div>
       </div>
     </div>
   )
