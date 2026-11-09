@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
-import { Target, Trophy, Clock, TrendingUp, Sparkles, Map, ArrowRight, MessageSquarePlus, HelpCircle, Lightbulb, Cpu } from 'lucide-react'
+import { Target, Trophy, Clock, TrendingUp, Sparkles, Map, ArrowRight, MessageSquarePlus, HelpCircle, Lightbulb, Cpu, Compass, BrainCircuit, UserCheck, FileDown, Loader2 } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { motion } from 'framer-motion'
+import { toast } from 'sonner'
 import api from '@/lib/api'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { FeedbackModule } from '@/components/shared/FeedbackModule'
@@ -18,6 +19,7 @@ export const Dashboard = () => {
   const [activeRoadmap, setActiveRoadmap] = useState<any>(null);
   const [latestAnalysis, setLatestAnalysis] = useState<any>(null);
   const [recentChat, setRecentChat] = useState<any[]>([]);
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     fetchDashboardData();
@@ -96,17 +98,23 @@ export const Dashboard = () => {
   }
 
   const handleDownloadReport = async () => {
+    setIsExporting(true);
     try {
+      toast.info("Generating certified AI Career Report PDF...");
       const response = await api.get('/api/export/career-report', { responseType: 'blob' });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', 'FutureForge_Career_Report.pdf');
       document.body.appendChild(link);
       link.click();
       link.remove();
-    } catch (e) {
-      alert("Failed to download report");
+      window.URL.revokeObjectURL(url);
+      toast.success("Career Report downloaded successfully!");
+    } catch (e: any) {
+      toast.error("Failed to download report. Ensure you have run a career analysis!");
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -123,12 +131,74 @@ export const Dashboard = () => {
         >
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-slate-900 mb-2">Dashboard</h1>
-            <p className="text-slate-500 text-base">Your personalized career overview.</p>
+            <p className="text-slate-500 text-base">Your personalized career overview and AI telemetry.</p>
           </div>
-          <Button onClick={handleDownloadReport} className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg h-11 px-6 shadow-sm">
-            <ArrowRight className="w-4 h-4 mr-2" /> 
-            Export AI Report
+          <Button 
+            onClick={handleDownloadReport} 
+            disabled={isExporting}
+            className="bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg h-11 px-6 shadow-sm font-semibold transition-all"
+          >
+            {isExporting ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Generating PDF...
+              </>
+            ) : (
+              <>
+                <FileDown className="w-4 h-4 mr-2" /> 
+                Export AI Report
+              </>
+            )}
           </Button>
+        </motion.div>
+
+        {/* Quick Enterprise Launchpad */}
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ duration: 0.4, delay: 0.05 }}
+          className="space-y-3"
+        >
+          <div className="flex items-center justify-between">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
+              <Sparkles className="w-3.5 h-3.5 text-cyan-600" />
+              Engineering Suite Launchpad
+            </h2>
+            <span className="text-[11px] font-medium text-cyan-700 bg-cyan-50 border border-cyan-200/60 rounded-full px-2.5 py-0.5">
+              100% Live AI Engine
+            </span>
+          </div>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            {[
+              { title: "Domain Match", desc: "Market fit & roles", icon: Compass, to: "/domains", color: "from-cyan-500 to-teal-500" },
+              { title: "Gap Analysis", desc: "4-pillar tech audit", icon: TrendingUp, to: "/analysis", color: "from-blue-500 to-indigo-500" },
+              { title: "Diagnostic Test", desc: "10 MCQs & compiler", icon: BrainCircuit, to: "/roadmap/assessment", color: "from-emerald-500 to-teal-600" },
+              { title: "Roadmaps", desc: "Curated blueprints", icon: Map, to: "/roadmap", color: "from-indigo-500 to-purple-500" },
+              { title: "Oracle Mentor", desc: "Staff engineer chat", icon: Sparkles, to: "/chat", color: "from-cyan-600 to-blue-600" },
+              { title: "Neural Profile", desc: "PDF resume parser", icon: UserCheck, to: "/profile", color: "from-amber-500 to-orange-500" },
+            ].map((item, i) => {
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={i}
+                  to={item.to}
+                  className="group relative p-3.5 rounded-xl bg-white border border-slate-200/90 hover:border-cyan-400 hover:shadow-md transition-all flex flex-col justify-between"
+                >
+                  <div className="flex items-center justify-between mb-2.5">
+                    <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${item.color} text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform`}>
+                      <Icon className="w-4 h-4" />
+                    </div>
+                    <ArrowRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-cyan-600 group-hover:translate-x-0.5 transition-all" />
+                  </div>
+                  <div>
+                    <h3 className="text-xs font-bold text-slate-900 group-hover:text-cyan-700 transition-colors">{item.title}</h3>
+                    <p className="text-[10px] text-slate-500 mt-0.5 leading-tight">{item.desc}</p>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
         </motion.div>
 
         {/* Top Metrics Row */}
@@ -341,7 +411,7 @@ export const Dashboard = () => {
                   <div className="p-4 rounded-xl bg-cyan-50 dark:bg-cyan-950/30 border border-cyan-200 dark:border-cyan-800 space-y-2">
                     <h4 className="font-semibold text-cyan-900 dark:text-cyan-200 flex items-center gap-2">
                       <Cpu className="w-4 h-4 text-cyan-600" />
-                      Powered by GPT OSS 20B
+                      Powered by Llama 3.3 70B (Groq Cloud)
                     </h4>
                     <p className="text-sm text-cyan-800 dark:text-cyan-300 leading-relaxed">
                       Our backend leverages high-speed neural processing to analyze market trends, skill gaps, and role requirements in real time.

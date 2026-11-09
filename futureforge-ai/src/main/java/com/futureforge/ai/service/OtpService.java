@@ -60,7 +60,15 @@ public class OtpService {
         }
 
         if (!verification.getOtp().equals(otp)) {
-            throw new BadRequestException("Invalid OTP.");
+            int attempts = verification.getFailedAttempts() + 1;
+            verification.setFailedAttempts(attempts);
+            if (attempts >= 5) {
+                otpRepository.delete(verification);
+                throw new BadRequestException("Too many invalid attempts. This OTP has been invalidated for security. Please request a new code.");
+            }
+            otpRepository.save(verification);
+            int remaining = 5 - attempts;
+            throw new BadRequestException("Invalid OTP. " + remaining + " attempt" + (remaining > 1 ? "s" : "") + " remaining.");
         }
 
         // OTP is valid

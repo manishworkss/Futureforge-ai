@@ -36,6 +36,7 @@ function App() {
           <Route path="/analysis" element={<CareerAnalysis />} />
           <Route path="/roadmap" element={<Roadmap />} />
           <Route path="/roadmap/assessment" element={<Assessment />} />
+          <Route path="/assessment" element={<Navigate to="/roadmap/assessment" replace />} />
           <Route path="/chat" element={<Chat />} />
         </Route>
         

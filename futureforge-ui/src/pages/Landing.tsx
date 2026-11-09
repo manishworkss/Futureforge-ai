@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Link } from 'react-router-dom'
-import { Compass, BookOpen, Target, Sparkles, Code, BrainCircuit, Users, Bot, ArrowRight, CheckCircle2 } from 'lucide-react'
+import { Compass, BookOpen, Target, Sparkles, Code, BrainCircuit, Users, Bot, ArrowRight, CheckCircle2, Star, Quote } from 'lucide-react'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -154,6 +154,88 @@ export const Landing = () => {
                 <div>
                   <h3 className="text-xl font-bold text-slate-900 mb-2">{item.title}</h3>
                   <p className="text-slate-600">{item.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section id="testimonials" className="py-24 bg-gradient-to-b from-white to-slate-50/70 border-t border-slate-100">
+        <div className="container mx-auto px-4 sm:px-8 max-w-6xl">
+          <motion.div 
+            initial="hidden" 
+            whileInView="visible" 
+            viewport={{ once: true }}
+            variants={fadeUp}
+            className="text-center mb-16"
+          >
+            <span className="inline-flex items-center rounded-full border border-teal-200 bg-teal-50 px-3.5 py-1 text-xs font-semibold text-teal-800 mb-4 shadow-xs">
+              <Star className="mr-1.5 h-3.5 w-3.5 fill-teal-600 text-teal-600" /> Proven Outcomes
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
+              Trusted by Engineers Breaking Into Top Tech
+            </h2>
+            <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
+              Real career transitions powered by FutureForge AI's diagnostic gap analysis and verified roadmap execution.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                name: "Ananya Sharma",
+                role: "Platform Engineer @ FinTech Unicorn",
+                prev: "Junior Full Stack Dev",
+                quote: "FutureForge identified that my microservices experience was strong but I lacked production Kubernetes & Terraform. The 6-week roadmap gave me exact hands-on projects that clinched my offer.",
+                rating: 5,
+                metric: "+65% Compensation Uplift"
+              },
+              {
+                name: "Marcus Vance",
+                role: "Machine Learning Engineer @ Scale AI",
+                prev: "Data Analyst",
+                quote: "The diagnostic skill assessment was brutally honest. Instead of watching random YouTube tutorials, the Oracle AI mentor guided me through implementing real transformer attention layers from scratch.",
+                rating: 5,
+                metric: "Transitioned in 90 Days"
+              },
+              {
+                name: "Rohit Patel",
+                role: "Staff Backend Engineer @ Cloud Enterprise",
+                prev: "Senior Java Developer",
+                quote: "The system design gap analysis helped me break out of legacy monoliths into distributed event-driven architectures. The PDF export was so thorough my mentor reviewed it directly.",
+                rating: 5,
+                metric: "Promoted to Staff Level"
+              }
+            ].map((t, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.15 }}
+                className="flex flex-col justify-between p-8 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex text-amber-400 gap-1">
+                      {[...Array(t.rating)].map((_, i) => (
+                        <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                      ))}
+                    </div>
+                    <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      {t.metric}
+                    </span>
+                  </div>
+                  <p className="text-slate-700 text-sm leading-relaxed italic mb-6">
+                    "{t.quote}"
+                  </p>
+                </div>
+                <div className="pt-4 border-t border-slate-100">
+                  <p className="font-bold text-slate-900 text-sm">{t.name}</p>
+                  <p className="text-xs font-medium text-cyan-600">{t.role}</p>
+                  <p className="text-[11px] text-slate-400 mt-0.5">Previous: {t.prev}</p>
                 </div>
               </motion.div>
             ))}

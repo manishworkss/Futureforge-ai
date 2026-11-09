@@ -8,7 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'sonner'
 import api from '@/lib/api'
 import { motion } from 'framer-motion'
-import { Map, Sparkles, MapPin, CheckCircle2, Circle, ArrowRight } from 'lucide-react'
+import { Map, Sparkles, MapPin, CheckCircle2, Circle, ArrowRight, BrainCircuit, ExternalLink } from 'lucide-react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 
 interface Milestone {
@@ -23,8 +23,37 @@ interface Milestone {
 interface RoadmapResponse {
   id: number;
   targetRole: string;
+  title?: string;
+  description?: string;
+  estimatedWeeks?: number;
+  difficultyLevel?: string;
   milestones: Milestone[];
 }
+
+const renderClickableResources = (text: string) => {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+
+  return parts.map((part, index) => {
+    if (part.match(urlRegex)) {
+      // Clean any trailing punctuation from URL
+      const cleanUrl = part.replace(/[.,;)]+$/, '');
+      return (
+        <a
+          key={index}
+          href={cleanUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-cyan-600 underline font-semibold hover:text-cyan-800 break-all inline-flex items-center gap-1"
+        >
+          {cleanUrl}
+          <ExternalLink className="w-3 h-3 inline shrink-0" />
+        </a>
+      );
+    }
+    return <span key={index}>{part}</span>;
+  });
+};
 
 export const Roadmap = () => {
   const [searchParams] = useSearchParams();
@@ -45,7 +74,7 @@ export const Roadmap = () => {
 
   useEffect(() => {
     fetchPastRoadmaps();
-  }, []);
+  }, [prefillRole]);
 
   const fetchPastRoadmaps = async () => {
     try {
@@ -56,6 +85,11 @@ export const Roadmap = () => {
           const matched = roadmaps.find((r: any) => r.targetRole.toLowerCase() === prefillRole.toLowerCase());
           if (matched) {
             await fetchRoadmapById(matched.id);
+            return;
+          } else {
+            setData(null);
+            setTargetRole(prefillRole);
+            setIsLoading(false);
             return;
           }
         }
@@ -81,13 +115,13 @@ export const Roadmap = () => {
 
   const handleGenerate = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (!targetRole) {
+    if (!targetRole.trim()) {
       toast.error('Please enter a target role');
       return;
     }
 
-    // Instead of generating immediately, route to the assessment phase
-    navigate(`/roadmap/assessment?domain=${encodeURIComponent(targetRole)}`);
+    // Route to diagnostic assessment for calibrated roadmap generation
+    navigate(`/roadmap/assessment?domain=${encodeURIComponent(targetRole.trim())}`);
   };
 
   const toggleMilestone = async (milestoneId: number) => {
@@ -126,18 +160,21 @@ export const Roadmap = () => {
 
   if (!data) {
     return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center min-h-[70vh] text-center space-y-8 relative z-10">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center min-h-[70vh] text-center space-y-8 relative z-10 px-4">
         <div className="relative">
           <div className="absolute inset-0 bg-cyan-400/20 blur-2xl rounded-full"></div>
-          <div className="relative bg-white/80 p-8 rounded-[2rem] border border-slate-200 shadow-xl backdrop-blur-xl">
+          <div className="relative bg-white/80 p-8 sm:p-12 rounded-[2rem] border border-slate-200 shadow-xl backdrop-blur-xl max-w-lg w-full">
             <Map className="h-16 w-16 text-cyan-600 mx-auto mb-6" />
             <h2 className="text-3xl font-extrabold text-slate-900 mb-2 tracking-tight">Chart Your Course</h2>
             <p className="text-slate-500 max-w-md mx-auto mb-8 text-sm leading-relaxed">
-              Generate a step-by-step neural learning roadmap tailored to your target role and current skill level.
+              {prefillRole 
+                ? `Ready to master ${prefillRole}? Take the diagnostic assessment to generate your personalized weekly milestones.`
+                : 'Generate a step-by-step neural learning roadmap tailored to your target role and verified skills.'
+              }
             </p>
-            <form onSubmit={handleGenerate} className="flex flex-col sm:flex-row w-full max-w-md items-center gap-3 mx-auto">
+            <form onSubmit={handleGenerate} className="flex flex-col sm:flex-row w-full items-center gap-3 mx-auto">
               <Input 
-                placeholder="e.g. Full Stack Developer" 
+                placeholder="e.g. Full Stack Developer, Cloud Architect" 
                 value={targetRole}
                 onChange={(e) => setTargetRole(e.target.value)}
                 className="bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 h-12 rounded-xl focus-visible:ring-cyan-500"
@@ -152,48 +189,76 @@ export const Roadmap = () => {
     );
   }
 
-  const completedCount = data.milestones.filter(m => m.isCompleted).length;
-  const totalCount = data.milestones.length;
-  const progressPercentage = totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100);
+  const completedMilestones = data.milestones.filter(m => m.isCompleted).length;
+  const totalMilestones = data.milestones.length;
+  const progressPercentage = totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0;
 
   return (
-    <div className="space-y-8 max-w-5xl mx-auto relative z-10">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm backdrop-blur-sm">
+    <div className="space-y-8 max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 relative z-10">
+      
+      {/* Top Banner / Roadmap Control Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 p-6 rounded-2xl bg-white/80 backdrop-blur-md border border-slate-200 shadow-sm">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 flex items-center gap-3">
-            <div className="p-2 bg-cyan-100 rounded-lg">
-              <Map className="h-6 w-6 text-cyan-600" />
-            </div>
-            Learning Roadmap
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-cyan-600 bg-cyan-50 px-2.5 py-1 rounded-full border border-cyan-100">
+              Active Curriculum
+            </span>
+            {data.difficultyLevel && (
+              <Badge variant="outline" className="text-xs">
+                {data.difficultyLevel}
+              </Badge>
+            )}
+          </div>
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
+            {data.title || `Roadmap to ${data.targetRole}`}
           </h1>
-          <p className="text-slate-500 mt-2">
-            Your personalized path to becoming a <strong className="text-cyan-700 bg-cyan-50 border border-cyan-100 px-2 py-0.5 rounded-md ml-1">{data.targetRole}</strong>
+          <p className="text-slate-500 text-sm mt-1 max-w-2xl leading-relaxed">
+            {data.description || `A structured weekly curriculum tailored to transition you into a production-ready ${data.targetRole}.`}
           </p>
         </div>
-        
-        <div className="flex flex-col items-end gap-4 w-full md:w-auto">
-          <div className="flex flex-col items-end w-full">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">{progressPercentage}% Secured</span>
-            <div className="w-full md:w-48 h-2.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
-              <div className="h-full bg-gradient-to-r from-cyan-400 to-teal-500 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(6,182,212,0.5)]" style={{ width: `${progressPercentage}%` }}></div>
-            </div>
-          </div>
-          
-          <form onSubmit={handleGenerate} className="flex w-full md:w-auto items-center gap-2">
-            <Input 
-              placeholder="New target role..." 
-              value={targetRole}
-              onChange={(e) => setTargetRole(e.target.value)}
-              className="bg-slate-50 border-slate-200 text-slate-900 focus-visible:ring-cyan-500 h-10 rounded-xl"
-            />
-            <Button type="submit" disabled={isGenerating} size="sm" className="bg-slate-100 hover:bg-slate-200 text-slate-900 h-10 rounded-xl border border-slate-200 shadow-sm">
-              {isGenerating ? "..." : <><Sparkles className="h-4 w-4 mr-2 text-cyan-600" /> Plot</>}
-            </Button>
-          </form>
+
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+          <Button 
+            onClick={() => navigate(`/roadmap/assessment?domain=${encodeURIComponent(data.targetRole)}`)}
+            variant="outline"
+            className="border-slate-200 text-slate-700 hover:bg-slate-50 gap-2 h-11"
+          >
+            <BrainCircuit className="w-4 h-4 text-cyan-600" />
+            Retake Assessment
+          </Button>
+          <Button 
+            onClick={() => navigate('/chat')}
+            className="bg-cyan-600 hover:bg-cyan-500 text-white gap-2 h-11 shadow-sm"
+          >
+            <Sparkles className="w-4 h-4" />
+            Ask Oracle Mentor
+          </Button>
         </div>
       </div>
 
-      <div className="py-8">
+      {/* Progress Card */}
+      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-5 h-5 text-cyan-600" />
+            <span className="font-bold text-slate-900 text-base">Trajectory Completion</span>
+          </div>
+          <span className="font-extrabold text-cyan-700 text-lg">{progressPercentage}%</span>
+        </div>
+        <div className="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
+          <div 
+            className="bg-gradient-to-r from-cyan-500 to-teal-500 h-full rounded-full transition-all duration-500"
+            style={{ width: `${progressPercentage}%` }}
+          />
+        </div>
+        <div className="flex justify-between items-center text-xs text-slate-500 mt-2 font-medium">
+          <span>{completedMilestones} of {totalMilestones} phases completed</span>
+          <span>{totalMilestones - completedMilestones} phases remaining</span>
+        </div>
+      </div>
+
+      {/* Timeline Milestones */}
+      <div className="py-4">
         <motion.div 
           variants={containerVariants}
           initial="hidden"
@@ -215,20 +280,20 @@ export const Roadmap = () => {
                 {milestone.isCompleted ? <CheckCircle2 className="w-5 h-5" /> : <Circle className="w-5 h-5" />}
               </div>
               
-              {/* Card */}
+              {/* Milestone Card */}
               <div className={`w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] transition-all duration-300 rounded-2xl p-6 backdrop-blur-xl border
-                ${milestone.isCompleted ? 'bg-cyan-50 border-cyan-200 shadow-[0_0_20px_-5px_rgba(6,182,212,0.2)]' : 'bg-white border-slate-200 shadow-sm hover:border-cyan-200 hover:shadow-md'}`}
+                ${milestone.isCompleted ? 'bg-cyan-50/60 border-cyan-200 shadow-[0_0_20px_-5px_rgba(6,182,212,0.15)]' : 'bg-white border-slate-200 shadow-sm hover:border-cyan-200 hover:shadow-md'}`}
               >
-                <div className="flex flex-row items-start justify-between mb-4">
+                <div className="flex flex-row items-start justify-between mb-3">
                   <div>
-                    <Badge variant="outline" className={`mb-3 bg-white ${milestone.isCompleted ? 'text-cyan-700 border-cyan-200' : 'text-slate-500 border-slate-200'}`}>
+                    <Badge variant="outline" className={`mb-2 bg-white ${milestone.isCompleted ? 'text-cyan-700 border-cyan-200' : 'text-slate-500 border-slate-200'}`}>
                       Phase {milestone.weekNumber}
                     </Badge>
-                    <h3 className={`text-xl font-bold ${milestone.isCompleted ? 'text-slate-900' : 'text-slate-700'}`}>
+                    <h3 className={`text-xl font-bold ${milestone.isCompleted ? 'text-slate-900' : 'text-slate-800'}`}>
                       {milestone.title}
                     </h3>
                   </div>
-                  <div className="flex items-center space-x-2 pt-1">
+                  <div className="flex items-center space-x-2 pt-1 shrink-0">
                     <Checkbox 
                       id={`milestone-${milestone.id}`} 
                       checked={milestone.isCompleted}
@@ -237,25 +302,27 @@ export const Roadmap = () => {
                     />
                   </div>
                 </div>
-                <p className={`text-sm leading-relaxed ${milestone.isCompleted ? 'text-slate-600' : 'text-slate-500'}`}>
+
+                <p className={`text-sm leading-relaxed ${milestone.isCompleted ? 'text-slate-600' : 'text-slate-600'}`}>
                   {milestone.description}
                 </p>
+
                 {milestone.resources && (
                   <div className="mt-4 pt-4 border-t border-slate-100">
                     <button 
                       onClick={() => toggleResources(milestone.id)}
-                      className="text-xs font-semibold text-cyan-600 hover:text-cyan-700 flex items-center transition-colors"
+                      className="text-xs font-bold text-cyan-600 hover:text-cyan-700 flex items-center transition-colors uppercase tracking-wider"
                     >
-                      {expandedResources.includes(milestone.id) ? 'Hide Resources' : 'View Recommended Resources'}
+                      {expandedResources.includes(milestone.id) ? '▾ Hide Resources' : '▸ View Curated Resources & Links'}
                     </button>
                     
                     {expandedResources.includes(milestone.id) && (
                       <motion.div 
                         initial={{ opacity: 0, height: 0 }} 
                         animate={{ opacity: 1, height: 'auto' }} 
-                        className="mt-3 bg-slate-50 p-3 rounded-lg border border-slate-100 text-sm text-slate-700 whitespace-pre-line"
+                        className="mt-3 bg-slate-50 p-4 rounded-xl border border-slate-200/80 text-sm text-slate-700 whitespace-pre-line leading-relaxed space-y-1.5"
                       >
-                        {milestone.resources}
+                        {renderClickableResources(milestone.resources)}
                       </motion.div>
                     )}
                   </div>
@@ -275,7 +342,7 @@ export const Roadmap = () => {
             <h3 className="text-3xl font-extrabold text-slate-900 mb-4">Journey Completed!</h3>
             <p className="text-slate-600 text-lg mb-8 leading-relaxed max-w-lg mx-auto">
               You have officially completed all milestones for the <strong className="text-slate-900 font-bold">{data.targetRole}</strong> roadmap. 
-              You are now ready to tackle the market.
+              You are now ready to tackle the technical market.
             </p>
             <Button onClick={() => navigate('/chat')} className="h-14 px-8 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-lg shadow-[0_0_20px_-5px_rgba(6,182,212,0.5)]">
               Initialize AI Interview Prep <ArrowRight className="ml-2 w-5 h-5" />

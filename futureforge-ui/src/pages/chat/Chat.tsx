@@ -5,7 +5,8 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { toast } from 'sonner'
 import api from '@/lib/api'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Send, User, Sparkles, Activity, Plus, MessageSquare, Trash2 } from 'lucide-react'
+import { Send, User, Sparkles, Activity, Plus, MessageSquare, Trash2, History } from 'lucide-react'
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import ReactMarkdown from 'react-markdown'
 
 interface ChatMessage {
@@ -29,6 +30,7 @@ export const Chat = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [mobileHistoryOpen, setMobileHistoryOpen] = useState(false);
   
   const scrollRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -179,20 +181,93 @@ export const Chat = () => {
       <div className="flex-1 flex flex-col min-w-0 bg-white/40">
         
         {/* Premium Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200 bg-white/80 shrink-0">
-          <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b border-slate-200 bg-white/80 shrink-0">
+          <div className="flex items-center gap-3 sm:gap-4">
             <div className="relative">
               <div className="absolute inset-0 bg-cyan-400 blur-md opacity-30 rounded-full animate-pulse"></div>
-              <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-400 to-teal-500 flex items-center justify-center border border-slate-200 shadow-lg overflow-hidden">
+              <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-cyan-400 to-teal-500 flex items-center justify-center border border-slate-200 shadow-lg overflow-hidden">
                 <img src="/logo.jpg" alt="Oracle Logo" className="w-full h-full object-cover" />
               </div>
-              <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-emerald-400 border-2 border-white rounded-full shadow-[0_0_10px_rgba(52,211,153,0.5)]"></div>
+              <div className="absolute -bottom-1 -right-1 w-3 h-3 sm:w-3.5 sm:h-3.5 bg-emerald-400 border-2 border-white rounded-full shadow-[0_0_10px_rgba(52,211,153,0.5)]"></div>
             </div>
             <div>
-              <h2 className="font-extrabold text-slate-900 tracking-tight text-lg">Oracle AI Mentor</h2>
-              <p className="text-xs font-semibold uppercase tracking-wider text-cyan-600 flex items-center gap-1.5 mt-0.5">
-                <Activity className="w-3 h-3" /> Neural Link Active
+              <h2 className="font-extrabold text-slate-900 tracking-tight text-base sm:text-lg">Oracle AI Mentor</h2>
+              <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-cyan-600 flex items-center gap-1.5 mt-0.5">
+                <Activity className="w-3 h-3" /> Staff Engineer Brain Active
               </p>
+            </div>
+          </div>
+
+          {/* Header Action Buttons */}
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={handleNewChat}
+              variant="outline"
+              size="sm"
+              className="hidden sm:flex border-cyan-200 text-cyan-700 hover:bg-cyan-50 font-semibold gap-1.5 h-9"
+            >
+              <Plus className="w-4 h-4" /> New Session
+            </Button>
+
+            {/* Mobile History Sheet */}
+            <div className="md:hidden">
+              <Sheet open={mobileHistoryOpen} onOpenChange={setMobileHistoryOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="sm" className="border-slate-200 text-slate-700 h-9 px-2.5 gap-1.5">
+                    <History className="w-4 h-4 text-cyan-600" />
+                    <span className="text-xs">Chats</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-[300px] p-4 bg-white border-slate-200 flex flex-col">
+                  <SheetHeader className="border-b border-slate-100 pb-3 mb-3">
+                    <SheetTitle className="text-base font-bold flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-cyan-600" />
+                      Session History
+                    </SheetTitle>
+                  </SheetHeader>
+                  <Button 
+                    onClick={() => {
+                      handleNewChat();
+                      setMobileHistoryOpen(false);
+                    }}
+                    className="w-full bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl mb-3 h-10 font-semibold flex items-center justify-center gap-2"
+                  >
+                    <Plus className="w-4 h-4" /> New Chat
+                  </Button>
+                  <ScrollArea className="flex-1 pr-1">
+                    <div className="space-y-1.5">
+                      {sessions.map(s => (
+                        <div 
+                          key={s.id} 
+                          onClick={() => {
+                            handleSelectSession(s.id);
+                            setMobileHistoryOpen(false);
+                          }}
+                          className={`flex items-center justify-between p-2.5 cursor-pointer rounded-lg text-sm transition-all ${
+                            activeSessionId === s.id 
+                              ? 'bg-cyan-50 text-cyan-800 font-semibold border border-cyan-200' 
+                              : 'hover:bg-slate-50 text-slate-600'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 truncate pr-2">
+                            <MessageSquare className="w-3.5 h-3.5 shrink-0 text-cyan-600" />
+                            <span className="truncate">{s.title}</span>
+                          </div>
+                          <button
+                            onClick={(e) => handleDeleteSession(s.id, e)}
+                            className="p-1 text-slate-400 hover:text-red-500 rounded"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ))}
+                      {sessions.length === 0 && (
+                        <p className="text-xs text-slate-400 text-center py-6">No chat sessions yet</p>
+                      )}
+                    </div>
+                  </ScrollArea>
+                </SheetContent>
+              </Sheet>
             </div>
           </div>
         </div>

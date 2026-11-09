@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Compass, LayoutDashboard, Target, MessageSquare, User, LogOut } from 'lucide-react'
+import { Compass, LayoutDashboard, Target, MessageSquare, User, LogOut, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface SidebarProps {
@@ -13,6 +13,7 @@ export const Sidebar = ({ className, onNavigate }: SidebarProps) => {
 
   const links = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+    { name: 'Domain Matching', href: '/domains', icon: Sparkles },
     { name: 'Career Analysis', href: '/analysis', icon: Compass },
     { name: 'Roadmap', href: '/roadmap', icon: Target },
     { name: 'AI Mentor', href: '/chat', icon: MessageSquare },

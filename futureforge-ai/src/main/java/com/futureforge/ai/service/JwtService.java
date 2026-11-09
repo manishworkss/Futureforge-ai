@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -88,5 +89,35 @@ public class JwtService {
 
     public long getAccessTokenExpiration() {
         return accessTokenExpiration;
+    }
+
+    public String generateAssessmentToken(String username, String domain, List<Integer> answerKey) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("domain", domain);
+        claims.put("type", "ASSESSMENT");
+        claims.put("answers", answerKey);
+
+        return Jwts.builder()
+                .claims(claims)
+                .subject(username)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + 3600000)) // 1 hour validity
+                .signWith(getSigningKey())
+                .compact();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Integer> extractAssessmentAnswers(String token, String expectedUsername, String expectedDomain) {
+        Claims claims = extractAllClaims(token);
+        if (!"ASSESSMENT".equals(claims.get("type"))) {
+            throw new com.futureforge.ai.exception.BadRequestException("Invalid assessment token type");
+        }
+        if (!expectedUsername.equals(claims.getSubject())) {
+            throw new com.futureforge.ai.exception.BadRequestException("Assessment token does not belong to the current user");
+        }
+        if (expectedDomain != null && !expectedDomain.equalsIgnoreCase((String) claims.get("domain"))) {
+            throw new com.futureforge.ai.exception.BadRequestException("Assessment token domain mismatch");
+        }
+        return (List<Integer>) claims.get("answers");
     }
 }

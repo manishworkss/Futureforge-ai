@@ -13,12 +13,16 @@ import { Link } from 'react-router-dom'
 interface RecommendedDomain {
   domainName: string;
   matchPercentage: number;
-  reasoning: string;
-  recommendedRoles: string[];
+  matchReasoning?: string;
+  reasoning?: string;
+  topRoles?: string[];
+  recommendedRoles?: string[];
 }
 
 interface DomainResponse {
-  recommendedDomains: RecommendedDomain[];
+  id?: number;
+  recommendations?: RecommendedDomain[];
+  recommendedDomains?: RecommendedDomain[];
 }
 
 export const DomainRecommendation = () => {
@@ -34,10 +38,9 @@ export const DomainRecommendation = () => {
   const fetchLatestRecommendation = async () => {
     try {
       const response = await api.get('/api/domains/latest');
-      setData(response.data.data); // data wrapped in ApiResponse
+      setData(response.data.data);
     } catch (error: any) {
       if (error.response?.status === 404) {
-        // No latest recommendation found
         setData(null);
       }
     } finally {
@@ -89,7 +92,7 @@ export const DomainRecommendation = () => {
     );
   }
 
-    if (!hasProfileContext) {
+  if (!hasProfileContext) {
     return (
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6">
         <div className="bg-amber-50 p-4 rounded-full">
@@ -108,7 +111,9 @@ export const DomainRecommendation = () => {
     );
   }
 
-  if (!data || !data.recommendedDomains || data.recommendedDomains.length === 0) {
+  const domainsList = data?.recommendations || data?.recommendedDomains || [];
+
+  if (domainsList.length === 0) {
     return (
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6">
         <div className="bg-cyan-50 p-6 rounded-full">
@@ -148,60 +153,65 @@ export const DomainRecommendation = () => {
         animate="visible"
         className="grid gap-6 lg:grid-cols-2"
       >
-        {data.recommendedDomains.map((domain, index) => (
-          <motion.div key={index} variants={itemVariants} whileHover={{ y: -4 }}>
-            <Card className={`h-full flex flex-col border-slate-200 shadow-sm ${index === 0 ? 'ring-2 ring-cyan-600/50 bg-cyan-50/30' : ''}`}>
-              <CardHeader className="pb-4">
-                <div className="flex justify-between items-start mb-2">
-                  <Badge variant={index === 0 ? "default" : "secondary"} className={index === 0 ? "bg-cyan-600 text-white" : ""}>
-                    {index === 0 ? "Top Match" : `Match #${index + 1}`}
-                  </Badge>
-                  <div className="flex items-center gap-1.5 text-sm font-bold text-green-600">
-                    <TrendingUp className="h-4 w-4" />
-                    {domain.matchPercentage}% Match
-                  </div>
-                </div>
-                <CardTitle className="text-2xl">{domain.domainName}</CardTitle>
-              </CardHeader>
-              <CardContent className="flex-1 space-y-6">
-                
-                <div>
-                  <Progress value={domain.matchPercentage} className={`h-2 ${index === 0 ? '[&>div]:bg-cyan-600' : ''} bg-slate-100`} />
-                </div>
+        {domainsList.map((domain, index) => {
+          const reasoning = domain.matchReasoning || domain.reasoning || '';
+          const roles = domain.topRoles || domain.recommendedRoles || [];
 
-                <div className="space-y-2">
-                  <h4 className="text-sm font-semibold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                    <Sparkles className="h-4 w-4 text-amber-500" /> 
-                    AI Reasoning
-                  </h4>
-                  <p className="text-sm text-slate-600 leading-relaxed bg-white p-4 rounded-lg border border-slate-100">
-                    {domain.reasoning}
-                  </p>
-                </div>
-
-                <div className="space-y-3">
-                  <h4 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">
-                    Recommended Roles
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {domain.recommendedRoles.map((role, rIndex) => (
-                      <Badge key={rIndex} variant="outline" className="bg-white">
-                        {role}
-                      </Badge>
-                    ))}
+          return (
+            <motion.div key={index} variants={itemVariants} whileHover={{ y: -4 }}>
+              <Card className={`h-full flex flex-col border-slate-200 shadow-sm ${index === 0 ? 'ring-2 ring-cyan-600/50 bg-cyan-50/30' : ''}`}>
+                <CardHeader className="pb-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <Badge variant={index === 0 ? "default" : "secondary"} className={index === 0 ? "bg-cyan-600 text-white" : ""}>
+                      {index === 0 ? "Top Match" : `Match #${index + 1}`}
+                    </Badge>
+                    <div className="flex items-center gap-1.5 text-sm font-bold text-green-600">
+                      <TrendingUp className="h-4 w-4" />
+                      {domain.matchPercentage}% Match
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-              <CardFooter className="pt-4 border-t border-slate-100">
-                <Link to="/analysis" className="w-full">
-                  <Button variant="ghost" className="w-full text-cyan-600 hover:text-cyan-700 hover:bg-cyan-50">
-                    Run Career Analysis for this Domain <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-              </CardFooter>
-            </Card>
-          </motion.div>
-        ))}
+                  <CardTitle className="text-2xl">{domain.domainName}</CardTitle>
+                </CardHeader>
+                <CardContent className="flex-1 space-y-6">
+                  
+                  <div>
+                    <Progress value={domain.matchPercentage} className={`h-2 ${index === 0 ? '[&>div]:bg-cyan-600' : ''} bg-slate-100`} />
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-semibold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                      <Sparkles className="h-4 w-4 text-amber-500" /> 
+                      AI Reasoning
+                    </h4>
+                    <p className="text-sm text-slate-600 leading-relaxed bg-white p-4 rounded-lg border border-slate-100">
+                      {reasoning}
+                    </p>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h4 className="text-sm font-semibold text-slate-900 uppercase tracking-wider">
+                      Recommended Roles
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {roles.map((role, rIndex) => (
+                        <Badge key={rIndex} variant="outline" className="bg-white">
+                          {role}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+                <CardFooter className="pt-4 border-t border-slate-100">
+                  <Link to={`/analysis?domain=${encodeURIComponent(domain.domainName)}`} className="w-full">
+                    <Button variant="ghost" className="w-full text-cyan-600 hover:text-cyan-700 hover:bg-cyan-50">
+                      Run Career Analysis for this Domain <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </Link>
+                </CardFooter>
+              </Card>
+            </motion.div>
+          );
+        })}
       </motion.div>
     </div>
   )

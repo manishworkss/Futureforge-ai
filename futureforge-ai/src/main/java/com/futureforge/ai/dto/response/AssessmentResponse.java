@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AssessmentResponse {
+    private String assessmentToken;
     private List<McqQuestion> mcqs;
     private List<CodingQuestion> coding;
 }

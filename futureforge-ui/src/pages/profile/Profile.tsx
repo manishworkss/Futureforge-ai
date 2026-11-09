@@ -93,18 +93,21 @@ export const Profile = () => {
         }
       });
       
-      const parsedData = JSON.parse(response.data.data);
+      const rawData = response.data.data;
+      const parsedData = typeof rawData === 'string' ? JSON.parse(rawData) : rawData;
       
       setProfile(prev => ({
         ...prev,
         bio: parsedData.bio || prev.bio,
         education: parsedData.education || prev.education,
-        semester: parsedData.semester || prev.semester,
+        semester: parsedData.semester !== undefined ? parsedData.semester : prev.semester,
         careerGoal: parsedData.careerGoal || prev.careerGoal,
         linkedinUrl: parsedData.linkedinUrl || prev.linkedinUrl,
         githubUrl: parsedData.githubUrl || prev.githubUrl,
         leetcodeUrl: parsedData.leetcodeUrl || prev.leetcodeUrl,
-        portfolioUrl: parsedData.portfolioUrl || prev.portfolioUrl
+        portfolioUrl: parsedData.portfolioUrl || prev.portfolioUrl,
+        skills: parsedData.skills || prev.skills,
+        interests: parsedData.interests || prev.interests,
       }));
       
       if (parsedData.skills && parsedData.skills.length > 0) {

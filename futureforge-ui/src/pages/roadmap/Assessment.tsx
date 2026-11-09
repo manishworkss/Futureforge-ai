@@ -23,6 +23,7 @@ interface CodingQuestion {
 }
 
 interface AssessmentData {
+  assessmentToken?: string;
   mcqs: McqQuestion[];
   coding: CodingQuestion[];
 }
@@ -120,44 +121,47 @@ export const Assessment = () => {
       return;
     }
 
-    // Evaluate MCQs
-    let correct = 0;
-    assessment.mcqs.forEach((q, index) => {
-      if (mcqAnswers[index] === q.correctOptionIndex) {
-        correct++;
-      }
-    });
-    setScore(correct);
-    setIsSubmitted(true);
+    const answersList = assessment.mcqs.map((_, i) => mcqAnswers[i] ?? -1);
+    const codingList = assessment.coding.map((_, i) => codingAnswers[i] || '');
 
-    // Build assessment feedback context
-    const assessmentContext = `
-      The user just took a skill assessment test for the role: ${domain}.
-      They scored ${correct} out of ${assessment.mcqs.length} on the multiple-choice section.
-      
-      Coding Challenge 1 (${assessment.coding[0].title}) User's solution:
-      ${codingAnswers[0]}
-      
-      Coding Challenge 2 (${assessment.coding[1].title}) User's solution:
-      ${codingAnswers[1]}
-      
-      Please evaluate these coding solutions implicitly and adjust the learning roadmap accordingly.
-      If their MCQ score is low or their coding solutions are poor/incorrect, add foundational milestones.
-      If they aced it, make the roadmap advanced.
-    `;
-
-    // Trigger roadmap generation
     setIsGeneratingRoadmap(true);
     try {
+      let finalContext = '';
+      if (assessment.assessmentToken) {
+        // Grade answers server-side with cryptographic signature validation
+        const submitRes = await api.post('/api/assessment/submit', {
+          domain,
+          assessmentToken: assessment.assessmentToken,
+          answers: answersList,
+          codingAnswers: codingList
+        });
+        const result = submitRes.data.data;
+        setScore(result.score);
+        finalContext = result.assessmentContext;
+      } else {
+        // Fallback for legacy mode
+        let correct = 0;
+        assessment.mcqs.forEach((q, index) => {
+          if (mcqAnswers[index] === q.correctOptionIndex) {
+            correct++;
+          }
+        });
+        setScore(correct);
+        finalContext = `Assessment completed for ${domain} with score ${correct}/${assessment.mcqs.length}`;
+      }
+
+      setIsSubmitted(true);
+
+      // Trigger roadmap generation with verified assessment performance
       await api.post('/api/roadmaps/generate', { 
         targetRole: domain,
-        assessmentContext: assessmentContext
+        assessmentContext: finalContext
       });
       toast.success('Roadmap generated based on your assessment!');
       // Navigate back to roadmap with prefilled role to load it
       navigate(`/roadmap?domain=${encodeURIComponent(domain)}`);
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to generate personalized roadmap');
+      toast.error(error.response?.data?.message || 'Failed to process assessment and generate roadmap');
       setIsGeneratingRoadmap(false);
     }
   };
