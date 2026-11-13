@@ -411,7 +411,7 @@ export const Dashboard = () => {
                   <div className="p-4 rounded-xl bg-cyan-50 dark:bg-cyan-950/30 border border-cyan-200 dark:border-cyan-800 space-y-2">
                     <h4 className="font-semibold text-cyan-900 dark:text-cyan-200 flex items-center gap-2">
                       <Cpu className="w-4 h-4 text-cyan-600" />
-                      Powered by Llama 3.3 70B (Groq Cloud)
+                      Powered by GPT OSS 120B (Groq Cloud)
                     </h4>
                     <p className="text-sm text-cyan-800 dark:text-cyan-300 leading-relaxed">
                       Our backend leverages high-speed neural processing to analyze market trends, skill gaps, and role requirements in real time.

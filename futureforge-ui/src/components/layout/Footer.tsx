@@ -29,7 +29,7 @@ export const Footer = () => {
           </p>
           <h4 className="font-semibold text-slate-900">2. AI Inference Isolation</h4>
           <p>
-            LLM requests processed through Groq Cloud (Llama 3.3 70B) are zero-retention API calls. Your code submissions, resume text, and prompt histories are not retained by foundational model providers for public training.
+            LLM requests processed through Groq Cloud (GPT OSS 120B) are zero-retention API calls. Your code submissions, resume text, and prompt histories are not retained by foundational model providers for public training.
           </p>
           <h4 className="font-semibold text-slate-900">3. User Rights</h4>
           <p>
@@ -77,7 +77,7 @@ export const Footer = () => {
       body: (
         <div className="space-y-4 text-sm text-slate-600 leading-relaxed">
           <p>
-            FutureForge AI is built on a modern enterprise stack: Spring Boot 3.3 backend with Java 21, React 18/19 with Vite and Tailwind CSS, Groq Cloud Llama 3.3 70B inference engine, and iText 8 enterprise PDF document generation.
+            FutureForge AI is built on a modern enterprise stack: Spring Boot 3.3 backend with Java 21, React 18/19 with Vite and Tailwind CSS, Groq Cloud GPT OSS 120B inference engine, and iText 8 enterprise PDF document generation.
           </p>
           <h4 className="font-semibold text-slate-900">Core Workflow:</h4>
           <ol className="list-decimal pl-5 space-y-1.5">
@@ -143,13 +143,12 @@ export const Footer = () => {
             
             {/* Brand */}
             <div className="col-span-1 md:col-span-1">
-              <Link to="/" className="flex items-center gap-2 mb-4">
-                <div className="relative flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-teal-500 shadow-sm overflow-hidden">
-                  <img src="/logo.jpg" alt="FutureForge Logo" className="w-full h-full object-cover" />
-                </div>
-                <span className="text-xl font-bold tracking-tight text-slate-900">
-                  FutureForge <span className="text-cyan-600">AI</span>
-                </span>
+              <Link to="/" className="flex items-center gap-2 mb-4 group">
+                <img 
+                  src="/logo-brand.png" 
+                  alt="FutureForge AI" 
+                  className="h-9 sm:h-10 w-auto object-contain transition-transform duration-200 group-hover:scale-105" 
+                />
               </Link>
               <p className="text-sm text-slate-500 mb-6 leading-relaxed">
                 Enterprise AI-driven career pathing, skill gap analysis, and mentor guidance for modern software engineers.

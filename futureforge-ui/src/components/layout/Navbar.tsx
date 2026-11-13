@@ -25,13 +25,12 @@ export const Navbar = () => {
         
         {/* Brand */}
         <div className="flex items-center gap-2">
-          <Link to="/" className="flex items-center gap-2.5">
-            <div className="relative flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-teal-500 shadow-sm overflow-hidden shrink-0">
-              <img src="/logo.jpg" alt="FutureForge Logo" className="w-full h-full object-cover" />
-            </div>
-            <span className="text-xl font-bold tracking-tight text-slate-900">
-              FutureForge <span className="text-cyan-600">AI</span>
-            </span>
+          <Link to="/" className="flex items-center gap-2.5 group">
+            <img 
+              src="/logo-brand.png" 
+              alt="FutureForge AI" 
+              className="h-9 sm:h-10 w-auto object-contain transition-transform duration-200 group-hover:scale-105" 
+            />
           </Link>
         </div>
         
@@ -73,10 +72,7 @@ export const Navbar = () => {
               <SheetContent side="right" className="w-[300px] sm:w-[360px] p-6 bg-white border-slate-200">
                 <SheetHeader className="text-left border-b border-slate-100 pb-4">
                   <SheetTitle className="flex items-center gap-2 text-lg font-bold">
-                    <div className="w-7 h-7 rounded-md overflow-hidden bg-gradient-to-br from-cyan-400 to-teal-500 shrink-0">
-                      <img src="/logo.jpg" alt="FutureForge Logo" className="w-full h-full object-cover" />
-                    </div>
-                    <span>FutureForge AI</span>
+                    <img src="/logo-brand.png" alt="FutureForge AI" className="h-8 w-auto object-contain" />
                   </SheetTitle>
                 </SheetHeader>
 

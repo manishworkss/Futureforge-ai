@@ -185,8 +185,8 @@ export const Chat = () => {
           <div className="flex items-center gap-3 sm:gap-4">
             <div className="relative">
               <div className="absolute inset-0 bg-cyan-400 blur-md opacity-30 rounded-full animate-pulse"></div>
-              <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-cyan-400 to-teal-500 flex items-center justify-center border border-slate-200 shadow-lg overflow-hidden">
-                <img src="/logo.jpg" alt="Oracle Logo" className="w-full h-full object-cover" />
+              <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white flex items-center justify-center border border-slate-200 shadow-md overflow-hidden">
+                <img src="/logo.png" alt="Oracle Logo" className="w-full h-full object-cover" />
               </div>
               <div className="absolute -bottom-1 -right-1 w-3 h-3 sm:w-3.5 sm:h-3.5 bg-emerald-400 border-2 border-white rounded-full shadow-[0_0_10px_rgba(52,211,153,0.5)]"></div>
             </div>
@@ -307,8 +307,8 @@ export const Chat = () => {
                             <User className="w-4 h-4 text-slate-500" />
                           </div>
                         ) : (
-                          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-400 to-teal-500 flex items-center justify-center shadow-[0_0_15px_-3px_rgba(6,182,212,0.4)] overflow-hidden">
-                            <img src="/logo.jpg" alt="Oracle Logo" className="w-full h-full object-cover" />
+                          <div className="w-8 h-8 rounded-xl bg-white border border-slate-100 flex items-center justify-center shadow-xs overflow-hidden">
+                            <img src="/logo.png" alt="Oracle Logo" className="w-full h-full object-cover" />
                           </div>
                         )}
                       </div>
@@ -340,8 +340,8 @@ export const Chat = () => {
 
               {isLoading && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex gap-4 items-end">
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-400 to-teal-500 flex items-center justify-center shadow-[0_0_15px_-3px_rgba(6,182,212,0.4)] mb-1 flex-shrink-0 overflow-hidden">
-                    <img src="/logo.jpg" alt="Oracle Logo" className="w-full h-full object-cover" />
+                  <div className="w-8 h-8 rounded-xl bg-white border border-slate-100 flex items-center justify-center shadow-xs mb-1 flex-shrink-0 overflow-hidden">
+                    <img src="/logo.png" alt="Oracle Logo" className="w-full h-full object-cover" />
                   </div>
                   <div className="bg-white/80 backdrop-blur-md border border-slate-200 px-6 py-5 rounded-[1.5rem] rounded-bl-sm flex items-center gap-2 shadow-sm">
                     <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { motion } from 'framer-motion'
+import { motion, type Variants } from 'framer-motion'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { Button } from '@/components/ui/button'
@@ -8,12 +8,12 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Link } from 'react-router-dom'
 import { Compass, BookOpen, Target, Sparkles, Code, BrainCircuit, Users, Bot, ArrowRight, CheckCircle2, Star, Quote } from 'lucide-react'
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
 }
 
-const staggerContainer = {
+const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -256,7 +256,7 @@ export const Landing = () => {
             <h2 className="text-3xl font-bold tracking-tight text-slate-900">Frequently Asked Questions</h2>
           </motion.div>
 
-          <Accordion type="single" collapsible className="w-full bg-white rounded-2xl border border-slate-200 px-6 py-2 shadow-sm">
+          <Accordion className="w-full bg-white rounded-2xl border border-slate-200 px-6 py-2 shadow-sm">
             <AccordionItem value="item-1">
               <AccordionTrigger className="text-left font-medium text-slate-900 hover:text-cyan-600">Is FutureForge free to use?</AccordionTrigger>
               <AccordionContent className="text-slate-600">
@@ -266,7 +266,7 @@ export const Landing = () => {
             <AccordionItem value="item-2">
               <AccordionTrigger className="text-left font-medium text-slate-900 hover:text-cyan-600">How accurate is the AI Mentor?</AccordionTrigger>
               <AccordionContent className="text-slate-600">
-                Our AI is powered by the latest Groq Llama 3 models, specifically prompted and contextualized with modern tech industry standards to provide highly accurate, up-to-date career advice.
+                Our AI is powered by high-performance Groq Cloud GPT OSS 120B models, specifically prompted and contextualized with modern tech industry standards to provide highly accurate, up-to-date career advice.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-3">

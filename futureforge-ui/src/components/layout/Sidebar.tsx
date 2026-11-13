@@ -25,12 +25,12 @@ export const Sidebar = ({ className, onNavigate }: SidebarProps) => {
       
       {/* Brand Header */}
       <div className="flex h-16 items-center px-6 border-b border-slate-200 bg-white shrink-0">
-        <Link to="/" className="flex items-center gap-3" onClick={onNavigate}>
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-teal-500 shadow-sm overflow-hidden shrink-0">
-            <img src="/logo.jpg" alt="FutureForge Logo" className="w-full h-full object-cover" />
+        <Link to="/" className="flex items-center gap-3 group" onClick={onNavigate}>
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl overflow-hidden shrink-0 shadow-xs border border-slate-100 bg-white transition-transform duration-200 group-hover:scale-105">
+            <img src="/logo.png" alt="FutureForge Logo" className="w-full h-full object-cover" />
           </div>
           <span className="text-lg font-bold tracking-tight text-slate-900 truncate">
-            FutureForge
+            FutureForge <span className="text-cyan-600">AI</span>
           </span>
         </Link>
       </div>

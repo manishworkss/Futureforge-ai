@@ -57,12 +57,15 @@ export const Login = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="flex items-center gap-3 mb-12"
+            className="mb-10"
           >
-            <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-teal-500 shadow-lg shadow-cyan-500/30 overflow-hidden">
-              <img src="/logo.jpg" alt="FutureForge Logo" className="w-full h-full object-cover" />
-            </div>
-            <span className="font-bold text-2xl text-slate-900 tracking-tight">FutureForge AI</span>
+            <Link to="/" className="inline-block group">
+              <img 
+                src="/logo-brand.png" 
+                alt="FutureForge AI" 
+                className="h-10 sm:h-12 w-auto object-contain transition-transform duration-200 group-hover:scale-105" 
+              />
+            </Link>
           </motion.div>
 
           <motion.div

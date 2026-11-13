@@ -49,10 +49,7 @@ export const AppLayout = () => {
 
             {/* Mobile Brand Title */}
             <Link to="/" className="md:hidden flex items-center gap-2 font-bold text-slate-900">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-teal-500 shadow-sm overflow-hidden shrink-0">
-                <img src="/logo.jpg" alt="Logo" className="w-full h-full object-cover" />
-              </div>
-              <span className="text-sm font-bold tracking-tight text-slate-900">FutureForge</span>
+              <img src="/logo-brand.png" alt="FutureForge AI" className="h-7 w-auto object-contain" />
             </Link>
           </div>
 
@@ -70,7 +67,7 @@ export const AppLayout = () => {
           
           <div className="flex items-center gap-3 sm:gap-5">
             <button 
-              onClick={() => toast.info('System Telemetry: Neural AI model (Llama 3.3 70B) & MySQL services are online.')}
+              onClick={() => toast.info('System Telemetry: Neural AI model (GPT OSS 120B) & MySQL services are online.')}
               className="relative text-slate-500 hover:text-cyan-500 transition-colors p-1"
               title="Notifications"
             >

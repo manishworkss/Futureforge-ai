@@ -245,7 +245,6 @@ export const Assessment = () => {
                     <RadioGroupItem 
                       value={optIdx.toString()} 
                       id={`q${index}-opt${optIdx}`} 
-                      checked={mcqAnswers[index] === optIdx}
                       className={mcqAnswers[index] === optIdx ? "bg-cyan-500 border-cyan-500 text-white data-checked:bg-cyan-500 data-[state=checked]:bg-cyan-500" : ""}
                     />
                     <Label htmlFor={`q${index}-opt${optIdx}`} className={`flex-1 cursor-pointer font-medium ${mcqAnswers[index] === optIdx ? 'text-cyan-900' : 'text-slate-700'}`}>
